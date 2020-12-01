@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en" prefix="og: http://ogp.me/ns#">
+<head>
+	<link rel="stylesheet" href="styles.css">
+	<title>PMD Text Line Test</title>
+	
+	<link rel="icon" 
+      type="image/png" 
+      href="favicon.png" />
+	  
+	<meta charset="utf-8"/>
+	<meta name="description" content="Test Lines of text"/>
+	<meta name="author" content="u/TheDasK" />
+	<meta name="robots" content="index,nofollow" />
+	  
+</head>
+<body>
+
+	<div class="section">
+		<textarea rows="4" cols="50" id="input" onkeyup="inputChange()"></textarea>
+	</div>
+	<div class="section">
+		<canvas value="test text" width="500" height="200" id="output"></canvas>
+		<p id="outputtest"></p>
+	</div>
+
+
+	<script>
+
+		function load(font){
+
+			font.src = 'font.png';
+			box.src = 'box.png';
+			inputChange()
+		}
+
+		function printCharacter(charxy){
+
+			context.drawImage(font,charxy[0],charxy[1],charxy[2],11,
+							  paddx+currx,paddy+curry*sepy,charxy[2]*scale,11*scale);
+
+			currx += charxy[2]*2
+
+		}
+
+		function inputChange(){
+
+			let tin = input.value;
+			if(tin == p.innerHTML) return;
+
+			let tout = "";
+			let skip = false;
+			let spec = false;
+			currx = 0, curry = 0;
+
+			context.clearRect(0, 0, canvas.width, canvas.height);
+			context.drawImage(box,0,0,480,104);
+
+			for (char in tin){
+				c = tin[char];
+
+				if(skip){
+					if (c == "]") skip = false;
+					continue;
+				}
+				
+				if(spec){
+					switch (c){
+						case "n":
+							c = "nl";
+							break;
+						case "'":
+							c = "s11";
+							break;
+					}
+					spec = false;
+				}
+
+				switch (c){
+					case "/":
+						spec = true;
+						continue;
+					case "[":
+						skip = true;
+						continue;
+					case ":":
+						c = "s1";
+						break;
+					case "+":
+						c = "s2";
+						break;
+					case "-":
+						c = "s3";
+						break;
+					case ",":
+						c = "s4";
+						break;
+					case ".":
+						c = "s5";
+						break;
+					case "¡":
+						c = "s6";
+						break;
+					case "!":
+						c = "s7";
+						break;
+					case "¿":
+						c = "s8";
+						break;
+					case "?":
+						c = "s9";
+						break;
+					case "´":
+						c = "s10";
+						break;
+					case "'":
+						c = "s10";
+						break;
+					case "`":
+						c = "s11";
+						break;
+					case '"':
+						c = "s12";
+						break;
+					case ' ':
+						c = "s16";
+						break;
+					case 'nl':
+						curry++;
+						currx = 0;
+						continue;
+				}
+
+				printCharacter(fontxy[c]);
+				tout += c;
+			}
+
+			p.innerHTML = tout;
+		}
+
+		fontxy = {
+			a:[5,3,5], b:[20,3,5], c:[35,3,5], d:[50,3,5], e:[65,3,5], f:[80,3,5], g:[95,3,5], 
+			h:[110,3,5], i:[126,3,3], j:[141,3,3], k:[155,3,5], l:[171,3,3], m:[184,3,8],
+			n:[5,16,5], o:[20,16,5], p:[35,16,5], q:[50,16,5], r:[65,16,5], s:[80,16,5], t:[96,16,4],
+			u:[110,16,5], v:[126,16,6], w:[139,16,8], x:[155,16,6], y:[170,16,5], z:[185,16,5], A:[5,5,9,11], B:[5,5,9,11], 
+			C:[5,5,9,11], D:[5,5,9,11], E:[5,5,9,11], F:[5,5,9,11], G:[5,5,9,11], H:[5,5,9,11], I:[5,5,9,11], 
+			J:[5,5,9,11], K:[5,5,9,11], L:[5,5,9,11], M:[5,5,9,11], N:[5,5,9,11], O:[5,5,9,11], P:[5,5,9,11], 
+			Q:[5,5,9,11], R:[5,5,9,11], S:[5,5,9,11], T:[5,5,9,11], U:[5,5,9,11], V:[5,5,9,11], W:[5,5,9,11], 
+			X:[5,5,9,11], Y:[5,5,9,11], Z:[5,5,9,11], 1:[5,5,9,11], 2:[5,5,9,11], 3:[5,5,9,11], 4:[5,5,9,11], 
+			5:[5,5,9,11], 6:[5,5,9,11], 7:[5,5,9,11], 8:[5,5,9,11], 9:[5,5,9,11], 0:[5,5,9,11], s1:[5,5,9,11], 
+			s2:[5,5,9,11], s3:[5,5,9,11], s4:[5,5,9,11], s5:[5,5,9,11], s6:[5,5,9,11], s7:[5,5,9,11], s8:[5,5,9,11], 
+			s9:[5,5,9,11], s10:[5,5,9,11], s11:[5,5,9,11], s12:[5,5,9,11], s13:[5,5,9,11], s14:[5,5,9,11],
+			s15:[5,5,9,11], s16:[5,5,9,11], sp:[5,5,9,11], nl:[5,5,9,11]
+		};
+
+		let input = document.getElementById('input');
+		let canvas = document.getElementById('output');
+		let context = canvas.getContext('2d');
+		let p = document.getElementById('outputtest');
+		let font = new Image();
+		let box = new Image();
+		let tout = "";
+
+		let scale = 2, currx = 0, curry = 0;
+		let paddx = 10 * scale, paddy = 8 * scale, sepy = 10 * scale;
+
+		load(font);
+	</script>
+</body>
+</html>
