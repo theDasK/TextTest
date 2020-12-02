@@ -20,30 +20,23 @@
 		<textarea rows="4" cols="50" id="input" onkeyup="inputChange()"></textarea>
 	</div>
 	<div class="section">
-		<canvas value="test text" width="500" height="200" id="output"></canvas>
-		<p id="outputtest"></p>
+		<canvas value="test text" width="480" height="106" id="output"></canvas>
+		<p hidden id="outputtest"></p>
 	</div>
 
 
 	<script>
-
-		function load(font){
-
-			font.src = 'font.png';
-			box.src = 'box.png';
-			inputChange()
-		}
 
 		function printCharacter(charxy){
 
 			context.drawImage(font,charxy[0],charxy[1],charxy[2],11,
 							  paddx+currx,paddy+curry*sepy,charxy[2]*scale,11*scale);
 
-			currx += charxy[2]*2
+			currx += charxy[2] * scale;
 
 		}
 
-		function inputChange(){
+		async function inputChange(){
 
 			let tin = input.value;
 			if(tin == p.innerHTML) return;
@@ -54,7 +47,7 @@
 			currx = 0, curry = 0;
 
 			context.clearRect(0, 0, canvas.width, canvas.height);
-			context.drawImage(box,0,0,480,104);
+			context.drawImage(box,0,0,240*scale,52*scale);
 
 			for (char in tin){
 				c = tin[char];
@@ -72,12 +65,15 @@
 						case "'":
 							c = "s11";
 							break;
+						case 'b':
+							c = "cb";
+							break;
 					}
 					spec = false;
 				}
 
 				switch (c){
-					case "/":
+					case "\\":
 						spec = true;
 						continue;
 					case "[":
@@ -122,9 +118,13 @@
 					case '"':
 						c = "s12";
 						break;
-					case ' ':
+					case 'ñ':
 						c = "s16";
 						break;
+					case ' ':
+						c = "sp";
+						break;
+					case '\n':
 					case 'nl':
 						curry++;
 						currx = 0;
@@ -138,31 +138,41 @@
 			p.innerHTML = tout;
 		}
 
+		function load(font){
+
+			font.src = 'font.png';
+			box.src = 'box.png';
+			input.value = '\\b: Hey, write something here!';
+			setTimeout(inputChange,300);
+		}
+
 		fontxy = {
 			a:[5,3,5], b:[20,3,5], c:[35,3,5], d:[50,3,5], e:[65,3,5], f:[80,3,5], g:[95,3,5], 
 			h:[110,3,5], i:[126,3,3], j:[141,3,3], k:[155,3,5], l:[171,3,3], m:[184,3,8],
 			n:[5,16,5], o:[20,16,5], p:[35,16,5], q:[50,16,5], r:[65,16,5], s:[80,16,5], t:[96,16,4],
-			u:[110,16,5], v:[126,16,6], w:[139,16,8], x:[155,16,6], y:[170,16,5], z:[185,16,5], A:[5,5,9,11], B:[5,5,9,11], 
-			C:[5,5,9,11], D:[5,5,9,11], E:[5,5,9,11], F:[5,5,9,11], G:[5,5,9,11], H:[5,5,9,11], I:[5,5,9,11], 
-			J:[5,5,9,11], K:[5,5,9,11], L:[5,5,9,11], M:[5,5,9,11], N:[5,5,9,11], O:[5,5,9,11], P:[5,5,9,11], 
-			Q:[5,5,9,11], R:[5,5,9,11], S:[5,5,9,11], T:[5,5,9,11], U:[5,5,9,11], V:[5,5,9,11], W:[5,5,9,11], 
-			X:[5,5,9,11], Y:[5,5,9,11], Z:[5,5,9,11], 1:[5,5,9,11], 2:[5,5,9,11], 3:[5,5,9,11], 4:[5,5,9,11], 
-			5:[5,5,9,11], 6:[5,5,9,11], 7:[5,5,9,11], 8:[5,5,9,11], 9:[5,5,9,11], 0:[5,5,9,11], s1:[5,5,9,11], 
-			s2:[5,5,9,11], s3:[5,5,9,11], s4:[5,5,9,11], s5:[5,5,9,11], s6:[5,5,9,11], s7:[5,5,9,11], s8:[5,5,9,11], 
-			s9:[5,5,9,11], s10:[5,5,9,11], s11:[5,5,9,11], s12:[5,5,9,11], s13:[5,5,9,11], s14:[5,5,9,11],
-			s15:[5,5,9,11], s16:[5,5,9,11], sp:[5,5,9,11], nl:[5,5,9,11]
+			u:[110,16,5], v:[126,16,6], w:[139,16,8], x:[155,16,6], y:[170,16,5], z:[185,16,5],  
+			A:[5,29,6], B:[20,29,6], C:[35,29,6], D:[50,29,6], E:[65,29,5], F:[80,29,5], G:[95,29,6],
+			H:[110,29,6], I:[126,29,4], J:[140,29,6], K:[155,29,6], L:[170,29,5], M:[184,29,8],
+			N:[5,42,6], O:[20,42,6], P:[35,42,6], Q:[50,42,6], R:[65,42,6], S:[80,42,6], T:[95,42,6],
+			U:[110,42,6], V:[125,42,6], W:[138,42,10], X:[155,42,6], Y:[170,42,6], Z:[185,42,6], 
+			1:[7,55,3], 2:[20,55,6], 3:[35,55,6], 4:[50,55,6], 5:[65,55,6], 6:[80,55,6], 7:[95,55,6], 
+			8:[110,55,6], 9:[125,55,6], 0:[140,55,6], s1:[157,55,2], s2:[170,55,6], s3:[185,55,5], 
+			s4:[6,67,3], s5:[21,67,3], s6:[36,67,4], s7:[51,67,4], s8:[65,67,6], s9:[80,67,6], s10:[97,67,3], 
+			s11:[112,67,3], s12:[125,67,6], s13:[140,67,6], s14:[154,67,7], s15:[170,67,6], s16:[182,67,10],
+			sp:[1,185,4], cb:[153,151,13]
 		};
 
 		let input = document.getElementById('input');
 		let canvas = document.getElementById('output');
 		let context = canvas.getContext('2d');
+		context.imageSmoothingEnabled = false;
 		let p = document.getElementById('outputtest');
 		let font = new Image();
 		let box = new Image();
 		let tout = "";
 
 		let scale = 2, currx = 0, curry = 0;
-		let paddx = 10 * scale, paddy = 8 * scale, sepy = 10 * scale;
+		let paddx = 12 * scale, paddy = 9 * scale, sepy = 17 * scale;
 
 		load(font);
 	</script>

@@ -51,8 +51,15 @@ h3 {
 	border-width: 8px 12px;
 	border-color: #68D068;
 	border-radius: 10px;
-	margin: 0px 15% 20px;
-	padding: 0px 10px;
+	margin: 10px auto 10px;
+	width: 500px;
+	padding: 10px;
+}
+
+#input,canvas {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .portrait {
