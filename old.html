@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en" prefix="og: http://ogp.me/ns#">
+<head>
+	<link rel="stylesheet" href="styles.css">
+	<title>PMD Text Line Test</title>
+	
+	<link rel="icon" 
+      type="image/png" 
+      href="assets/favicon.png" />
+	  
+	<meta charset="utf-8"/>
+	<meta name="description" content="Test Lines of text"/>
+	<meta name="author" content="u/TheDasK" />
+	<meta name="robots" content="index,nofollow" />
+	  
+</head>
+<body>
+	<h1>ExplorerScript Boundary Test</h1>
+	<div class="section">
+		<textarea rows="4" cols="50" id="input" onkeyup="inputChange()"></textarea>
+	</div>
+	<div class="section">
+		<canvas value="test text" width="480" height="106" id="output"></canvas>
+		<p hidden id="outputtest"></p>
+	</div>
+	<div class="section-text">
+		<p>Welcome to the Explorerscript Boundary Test! The idea of the site is to test if lines of text written in ExplorerScript fits in a the game's text box.<br>
+			All characters should have the right size, but let me know if I messed up any symbol! The textbox is multi-line so you can check as many lines as you want.<br>
+			These special symbols are supported, with some modifications:
+		   <ul class="social-media">
+			<li>\b - Shows the chat Bubble that the games sometimes use </li>
+			<li>\n - New Line</li>
+			<li>\' - '</li>
+			<li>\" - "</li>
+			<li>[hero] [partner] [CS:X] - Displays "wcwcwcwcw" that should be the max allowed size for a name</li>
+		</ul>
+		Everything else in brackets gets ignored. If I missed some useful and common tag of symbol, or you want some other feature implemented,
+		or just want to correct me on my grammar (please do), let me know, I'm DasK on <a href="https://discord.gg/4e3X36f">SkyTemple's Discord</a>!<br>
+		</p>
+		<p>
+		Check the sourcecode <a href="https://github.com/theDasK/TextTest">here</a>. Font ripped by <a href="https://www.spriters-resource.com/submitter/John2k4/">John2k4</a>
+		</p>
+	</div>
+
+
+	<script>
+
+		function printCharacter(charxy){
+
+			context.drawImage(font,charxy[0],charxy[1],charxy[2],11,
+							  paddx+currx,paddy+curry*sepy,charxy[2]*scale,11*scale);
+
+			currx += charxy[2] * scale;
+
+		}
+
+		function printSpecial(){
+			t = "wcwcwcwcw";
+			for (i in t){
+				printCharacter(fontxy[t[i]]);
+			}
+		}
+
+		function drawBox(){
+
+			canvas.height = 52*scale;
+
+			if (maxy < 2) {
+				canvas.height = 52*scale;
+				context.drawImage(boxtop,0,0,240*scale,9*scale);
+				context.drawImage(boxmid,0,9*scale,240*scale,34*scale);
+				context.drawImage(boxbot,0,43*scale,240*scale,9*scale);
+			} else {
+				canvas.height = (18+17*(maxy+1))*scale;
+				context.drawImage(boxtop,0,0*scale,240*scale,9*scale);
+				context.drawImage(boxmid,0,9*scale,240*scale,34*maxy*scale);
+				context.drawImage(boxbot,0,(9+17*(maxy+1))*scale,240*scale,9*scale);
+			}
+		}
+
+		function inputChange(){
+
+			let tin = input.value;
+			if(tin == p.innerHTML) return;
+
+			let tout = "";
+			let skip = false;
+			let spec = false;
+			currx = 0, curry = 0;
+
+			context.clearRect(0, 0, canvas.width, canvas.height);
+			drawBox();
+
+			for (char in tin){
+				c = tin[char];
+
+				if(skip){
+					if (c == "]") skip = false;
+					continue;
+				}
+				
+				if(spec){
+					switch (c){
+						case "n":
+							c = "nl";
+							break;
+						case "'":
+							c = "s11";
+							break;
+						case 'b':
+							c = "cb";
+							break;
+					}
+					spec = false;
+				}
+
+				switch (c){
+					case "\\":
+						spec = true;
+						continue;
+					case "[":
+						if (tin.substr(char,6) == "[hero]" || tin.substr(char,6) == "[CS:X]" || tin.substr(char,9) == "[partner]"){
+							printSpecial();
+						}
+						skip = true;
+						continue;
+					case ":":
+						c = "s1";
+						break;
+					case "+":
+						c = "s2";
+						break;
+					case "-":
+						c = "s3";
+						break;
+					case ",":
+						c = "s4";
+						break;
+					case ".":
+						c = "s5";
+						break;
+					case "¡":
+						c = "s6";
+						break;
+					case "!":
+						c = "s7";
+						break;
+					case "¿":
+						c = "s8";
+						break;
+					case "?":
+						c = "s9";
+						break;
+					case "´":
+						c = "s10";
+						break;
+					case "'":
+						c = "s10";
+						break;
+					case "`":
+						c = "s11";
+						break;
+					case '"':
+						c = "s12";
+						break;
+					case 'ñ':
+						c = "s16";
+						break;
+					case ' ':
+						c = "sp";
+						break;
+					case '\n':
+					case 'nl':
+						curry++;
+						currx = 0;
+						continue;
+				}
+
+				printCharacter(fontxy[c]);
+				tout += c;
+			}
+			maxy = curry;
+
+			p.innerHTML = tout;
+		}
+
+		function load(){
+
+			font.src = 'assets/font.png';
+			boxtop.src = 'assets/boxtop.png';
+			boxmid.src = 'assets/boxmid.png';
+			boxbot.src = 'assets/boxbot.png';
+			input.value = '\\b: Hey, write something here!';
+			setTimeout(inputChange,300);
+		}
+
+		fontxy = {
+			a:[5,3,5], b:[20,3,5], c:[35,3,5], d:[50,3,5], e:[65,3,5], f:[80,3,5], g:[95,3,5], 
+			h:[110,3,5], i:[126,3,3], j:[141,3,3], k:[155,3,5], l:[171,3,3], m:[184,3,8],
+			n:[5,16,5], o:[20,16,5], p:[35,16,5], q:[50,16,5], r:[65,16,5], s:[80,16,5], t:[96,16,4],
+			u:[110,16,5], v:[126,16,6], w:[139,16,8], x:[155,16,6], y:[170,16,5], z:[185,16,5],  
+			A:[5,29,6], B:[20,29,6], C:[35,29,6], D:[50,29,6], E:[65,29,5], F:[80,29,5], G:[95,29,6],
+			H:[110,29,6], I:[126,29,4], J:[140,29,6], K:[155,29,6], L:[170,29,5], M:[184,29,8],
+			N:[5,42,6], O:[20,42,6], P:[35,42,6], Q:[50,42,6], R:[65,42,6], S:[80,42,6], T:[95,42,6],
+			U:[110,42,6], V:[125,42,6], W:[138,42,10], X:[155,42,6], Y:[170,42,6], Z:[185,42,6], 
+			1:[7,55,3], 2:[20,55,6], 3:[35,55,6], 4:[50,55,6], 5:[65,55,6], 6:[80,55,6], 7:[95,55,6], 
+			8:[110,55,6], 9:[125,55,6], 0:[140,55,6], s1:[157,55,2], s2:[170,55,6], s3:[185,55,5], 
+			s4:[6,67,3], s5:[21,67,3], s6:[36,67,4], s7:[51,67,4], s8:[65,67,6], s9:[80,67,6], s10:[97,67,3], 
+			s11:[112,67,3], s12:[125,67,6], s13:[140,67,6], s14:[154,67,7], s15:[170,67,6], s16:[182,67,10],
+			sp:[1,185,4], cb:[153,151,13]
+		};
+
+		let input = document.getElementById('input');
+		let canvas = document.getElementById('output');
+		let context = canvas.getContext('2d');
+		context.imageSmoothingEnabled = false;
+		let p = document.getElementById('outputtest');
+		let font = new Image();
+		let boxtop = new Image();
+		let boxmid = new Image();
+		let boxbot = new Image();
+		let tout = "";
+
+		let scale = 2, currx = 0, curry = 0, maxy = 0;
+		let paddx = 12 * scale, paddy = 9 * scale, sepy = 17 * scale;
+
+		load();
+	</script>
+</body>
+</html>

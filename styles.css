@@ -1,3 +1,8 @@
+@font-face {
+	font-family: WonderMail;
+	src: url("assets/wondermail.ttf");
+}
+
 body {
     background-color: #707070;
 	background: url("assets/back.png") no-repeat fixed center;
@@ -28,6 +33,7 @@ h1 {
 }
 
 .section {
+	min-height: 100px;
 	background-color: #333333;
 	border-style: ridge;
 	border-width: 8px 12px;
@@ -37,6 +43,7 @@ h1 {
 	width: 500px;
 	padding: 10px;
 }
+
 .section-text {
 	background-color: #333333;
 	border-style: ridge;
@@ -47,7 +54,22 @@ h1 {
 	padding: 0px 10px;
 }
 
-#input,canvas {
+#output {
+	margin-top: 10px;
+	margin-left: 36px;
+	font-family: WonderMail;
+	font-size:200%;
+	z-index: 1; 
+	white-space: nowrap;
+}
+
+#box{
+	margin-left: 10px;
+	margin-right: auto;
+	position: absolute;
+}
+
+#input {
     display: block;
     margin-left: auto;
     margin-right: auto;
