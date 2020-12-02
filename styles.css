@@ -1,6 +1,6 @@
 body {
     background-color: #707070;
-	background: url("back.png") no-repeat fixed center;
+	background: url("assets/back.png") no-repeat fixed center;
     color: #FFFFFF;
     font-family: 'Verdana', Helvetica, Arial, sans-serif;
     font-weight: 300;
@@ -51,91 +51,4 @@ h1 {
     display: block;
     margin-left: auto;
     margin-right: auto;
-}
-
-.portrait {
-    max-width: 80px;
-    width: 200%;
-	border-style: ridge;
-	border-width: 8px 12px;
-	border-color: #68D068;
-	border-radius: 10px;
-	margin: 5px 17% 0px;
-}
-
-.list-table, .port-table {
-	background-color: #333333;
-	border-style: ridge;
-	border-width: 8px 12px;
-	border-color: #68D068;
-	border-radius: 10px;
-	margin: 0px 20px;
-	margin-left: auto;
-	margin-right: auto;
-	padding: 0px 10px;
-	
-}
-
-.port-credit {
-	
-}
-
-.port-table td {
-	text-align: center;
-}
-.port-table td.port-expresion {
-	text-align: center;
-}
-
-/*#333333*/
-
-/* Add a black background color to the top navigation */
-.topnav {
-	background-color: #212121;
-	overflow: hidden;
-	position: fixed;
-	top: 0;
-	left: 0;
-	z-index: 999;
-	width: 100%;
-}
-
-.footer {
-	background-color: #212121;
-	position: fixed;
-	bottom: 0;
-	left: 0;
-	border-style: ridge;
-	border-width: 8px 12px;
-	border-color: #68D068;
-	border-radius: 10px;
-}
-
-/* Style the links inside the navigation bar */
-.topnav a {
-  float: left;
-  color: #f2f2f2;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
-  font-size: 17px;
-}
-
-/* Change the color of links on hover */
-.topnav a:hover {
-  background-color: #ddd;
-  color: black;
-}
-
-/* Add a color to the active/current link */
-.topnav a.active {
-  background-color: #4CAF50;
-  color: white;
-}
-
-.footer a {
-  float: left;
-  color: #f2f2f2;
-  padding: 7px;
-  text-decoration: none;
 }
