@@ -15,13 +15,28 @@
 	  
 </head>
 <body>
-
+	<h1>ExplorerScript Boundary Test</h1>
 	<div class="section">
 		<textarea rows="4" cols="50" id="input" onkeyup="inputChange()"></textarea>
 	</div>
 	<div class="section">
 		<canvas value="test text" width="480" height="106" id="output"></canvas>
 		<p hidden id="outputtest"></p>
+	</div>
+	<div class="section-text">
+		<p>Welcome to the Explorerscript Boundary Test! The idea of the site is to test if lines of text written in ExplorerScript fits in a the game's text box.<br>
+			All characters should have the right size, but let me know if I messed up any symbol! The textbox is multi-line so you can check as many lines as you want.<br>
+			These special symbols are supported, with some modifications:
+		   <ul class="social-media">
+			<li>\b - Shows the chat Bubble that the games sometimes use </li>
+			<li>\n - New Line</li>
+			<li>\' - '</li>
+			<li>\" - "</li>
+			<li>[hero] [partner] [CS:X] - Displays "wcwcwcwcw" that should be the max allowed size for a name</li>
+		</ul>
+		Everything else in brackets gets ignored. If I missed some useful and common tag of symbol, or you want some other feature implemented,
+		or just want to correct me on my grammar (please do), let me know, I'm DasK on <a href="https://discord.gg/4e3X36f">SkyTemple's Discord</a>!
+		</p>
 	</div>
 
 
@@ -36,7 +51,31 @@
 
 		}
 
-		async function inputChange(){
+		function printSpecial(){
+			t = "wcwcwcwcw";
+			for (i in t){
+				printCharacter(fontxy[t[i]]);
+			}
+		}
+
+		function drawBox(){
+
+			canvas.height = 52*scale;
+
+			if (maxy < 2) {
+				canvas.height = 52*scale;
+				context.drawImage(boxtop,0,0,240*scale,9*scale);
+				context.drawImage(boxmid,0,9*scale,240*scale,34*scale);
+				context.drawImage(boxbot,0,43*scale,240*scale,9*scale);
+			} else {
+				canvas.height = (18+17*(maxy+1))*scale;
+				context.drawImage(boxtop,0,0*scale,240*scale,9*scale);
+				context.drawImage(boxmid,0,9*scale,240*scale,34*maxy*scale);
+				context.drawImage(boxbot,0,(9+17*(maxy+1))*scale,240*scale,9*scale);
+			}
+		}
+
+		function inputChange(){
 
 			let tin = input.value;
 			if(tin == p.innerHTML) return;
@@ -47,7 +86,7 @@
 			currx = 0, curry = 0;
 
 			context.clearRect(0, 0, canvas.width, canvas.height);
-			context.drawImage(box,0,0,240*scale,52*scale);
+			drawBox();
 
 			for (char in tin){
 				c = tin[char];
@@ -77,6 +116,9 @@
 						spec = true;
 						continue;
 					case "[":
+						if (tin.substr(char,6) == "[hero]" || tin.substr(char,6) == "[CS:X]" || tin.substr(char,9) == "[partner]"){
+							printSpecial();
+						}
 						skip = true;
 						continue;
 					case ":":
@@ -134,14 +176,17 @@
 				printCharacter(fontxy[c]);
 				tout += c;
 			}
+			maxy = curry;
 
 			p.innerHTML = tout;
 		}
 
-		function load(font){
+		function load(){
 
 			font.src = 'font.png';
-			box.src = 'box.png';
+			boxtop.src = 'boxtop.png';
+			boxmid.src = 'boxmid.png';
+			boxbot.src = 'boxbot.png';
 			input.value = '\\b: Hey, write something here!';
 			setTimeout(inputChange,300);
 		}
@@ -168,13 +213,15 @@
 		context.imageSmoothingEnabled = false;
 		let p = document.getElementById('outputtest');
 		let font = new Image();
-		let box = new Image();
+		let boxtop = new Image();
+		let boxmid = new Image();
+		let boxbot = new Image();
 		let tout = "";
 
-		let scale = 2, currx = 0, curry = 0;
+		let scale = 2, currx = 0, curry = 0, maxy = 0;
 		let paddx = 12 * scale, paddy = 9 * scale, sepy = 17 * scale;
 
-		load(font);
+		load();
 	</script>
 </body>
 </html>
