@@ -88,7 +88,7 @@
 			boxbot.src = 'assets/boxbot.png';
 
 			if (!text) text = 'Hey, write something here!';
-			input.value = text;
+			input.value = text.substr(1,text.length-2)
 			setTimeout(inputChange,300);
 		}
 
