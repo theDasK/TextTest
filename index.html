@@ -69,7 +69,8 @@
 
 			let tout = tin.replaceAll('\\b', '<i class="bouble></i>').replaceAll('\\p', '<i class="money></i>')
 			.replaceAll('[hero]', 'wcwcwcwcw').replaceAll('[partner]', 'wcwcwcwcw').replaceAll('[CS:X]', 'wcwcwcwcw')
-			.replaceAll('\\n', '\n').replaceAll(/\[[^\]]*]/g,"");
+			.replaceAll('\\n', '\n').replaceAll("\\'", "'").replaceAll('\\"', '"').replaceAll('\\\\', '\\')
+			.replaceAll(/\[[^\]]*]/g);
 
 			output.innerText = tout;
 
