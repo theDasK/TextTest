@@ -142,7 +142,7 @@
 			
 			console.log("WS Server: " + wsServer);
 
-			ws = new WebSocket(wsServer + ":" + wsPort);
+			ws = new WebSocket(wsServer);
 
 			ws.addEventListener("open", ()=> {
 				console.log("Conected!");
