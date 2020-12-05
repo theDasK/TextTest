@@ -32,6 +32,29 @@ h1 {
 	padding: 0px 0px 10px;
 }
 
+em.hero{
+	color:#009cff;
+	font-style: normal;
+}
+
+em.partner{
+	color:#FFFF00;
+	font-style: normal;
+}
+
+em.team{
+	color:#FFA5FE;
+	font-style: normal;
+}
+
+img[class^="icon"] {
+	position: relative;
+	margin-top: -5px;
+	top: 2px;
+	left: -1px;
+	margin-right: 1px;
+}
+
 .section-input {
 	background-color: #333333;
 	border-style: ridge;

@@ -25,6 +25,7 @@
 	</div>
 	<div class="section-text">
 		<p>Scale: <a onclick="scaleChange(1)">1x</a> <a onclick="scaleChange(2)">2x</a> <a onclick="scaleChange(3)">3x</a> <a onclick="scaleChange(4)">4x</a> </p>
+		<p>Speaker: <a onclick="speakerChange('hero')">Hero</a> <a onclick="speakerChange('partner')">Partner</a> <a onclick="speakerChange('icon')">Icon</a> <a onclick="speakerChange('')">None</a></p>
 		<p>Welcome to the Explorerscript Boundary Test! The idea of the site is to test if lines of text written in ExplorerScript fits in a the game's text box.<br>
 			All characters should have the right size, but let me know if I messed up any symbol! The textbox is multi-line so you can check as many lines as you want.<br>
 			These special symbols are supported, with some modifications:
@@ -32,7 +33,7 @@
 			<li>\n - New Line</li>
 			<li>\' - '</li>
 			<li>\" - "</li>
-			<li>[hero] [partner] [CS:X] - Displays "wcwcwcwcw" that should be the max allowed size for a name</li>
+			<li>[hero] [partner] [CS:X] - A name can only be 60px long, so this displays "wcwcwcwcw" that should be the max allowed size for a name</li>
 		</ul>
 		Everything else in brackets gets ignored. If I missed some useful and common tag of symbol, or you want some other feature implemented,
 		or just want to correct me on my grammar (please do), let me know, I'm DasK on <a href="https://discord.gg/4e3X36f">SkyTemple's Discord</a>!<br>
@@ -66,17 +67,18 @@
 
 		function inputChange(){
 
-			let tin = input.value;
+			let tin = speaker + input.value;
 
-			let tout = tin.replaceAll('\\b', '<i class="bouble></i>').replaceAll('\\p', '<i class="money></i>')
-			.replaceAll('[hero]', 'wcwcwcwcw').replaceAll('[partner]', 'wcwcwcwcw').replaceAll('[CS:X]', 'wcwcwcwcw')
-			.replaceAll('\\n', '\n').replaceAll("\\'", "'").replaceAll('\\"', '"').replaceAll('\\\\', '\\')
-			.replaceAll(/\[[^\]]*]/g,"");
-
-			output.innerText = tout;
+			let tout = tin.replaceAll('\\p', '<img src="assets/pmoney.png" class="icon icon-pmoney">')
+			.replaceAll('[hero]', '<em class="hero">HITMONCHAN</em>').replaceAll('[partner]', '<em class="partner">MARSHADOW</em>')
+			.replaceAll('[CS:X]', '<em class="team">wcwcwcwcw</em>').replaceAll('\\n', '<br>').replaceAll('\n', '<br>').replaceAll("\\'", "'")
+			.replaceAll('\\"', '"').replaceAll('\\\\', '\\').replaceAll(/\[[^\]]*]/g,"")
+			.replaceAll('\\b', '<img src="assets/iconbubble.png" class="icon icon-bubble">');
+			
+			output.innerHTML = tout;
 
 			let param = [];
-			param = tout.split("\n");
+			param = tout.split("<br>");
 			param = param.length;
 
 			drawBox(param);
@@ -89,9 +91,23 @@
 			output.style.paddingLeft = 10 + 13 * newScale + "px";
 			output.style.fontSize = 100 * newScale + "%";
 			output.style.lineHeight = 13 * newScale + "px";
+
 			box.height = 52 * scale;
 			box.width = 240 * scale;
-			inputChange()
+			inputChange();
+		}
+
+		function speakerChange(newSpeaker){
+
+			if (!newSpeaker){
+				speaker = "";
+			} else if (newSpeaker == "icon") {
+				speaker = '<img src="assets/iconbubble.png" class="bubble">: ';
+			} else {
+				speaker = "[" + newSpeaker + "]: ";
+			}
+
+			inputChange();
 		}
 
 		function load(){
@@ -100,9 +116,10 @@
 			boxmid.src = 'assets/boxmid.png';
 			boxbot.src = 'assets/boxbot.png';
 
-			if (!text) text = '.Hey, write something here!.';
+			if (!text) text = '.\\b: Hey, write something here!.';
 			input.value = text.substr(1,text.length-2)
 			setTimeout(inputChange,300);
+			setTimeout(inputChange,2000);
 		}
 
 		function findGetParameter(parameterName) {
@@ -121,6 +138,8 @@
 		let scale = findGetParameter("scale");
 		let wsOn = findGetParameter("ws");
 		let wsServer = findGetParameter("wsServer");
+
+		let speaker = "";
 
 		let input = document.getElementById('input');
 		let output = document.getElementById('output');
