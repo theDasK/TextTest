@@ -32,16 +32,33 @@ h1 {
 	padding: 0px 0px 10px;
 }
 
-.section {
-	min-height: 100px;
+.section-input {
 	background-color: #333333;
 	border-style: ridge;
 	border-width: 8px 12px;
 	border-color: #68D068;
 	border-radius: 10px;
-	margin: 10px auto 10px;
-	width: 500px;
 	padding: 10px;
+	width: min-content;
+	align-self: center;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top:20px;
+}
+
+.section-result {
+	background-color: #333333;
+	border-style: ridge;
+	border-width: 8px 12px;
+	border-color: #68D068;
+	border-radius: 10px;
+	padding: 10px;
+	width: min-content;
+	align-self: center;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top:20px;
+	position: relative;
 }
 
 .section-text {
@@ -50,27 +67,28 @@ h1 {
 	border-width: 8px 12px;
 	border-color: #68D068;
 	border-radius: 10px;
-	margin: 0px 15% 20px;
+	margin: 20px 15% 20px;
 	padding: 0px 10px;
 }
 
+#box, #input{
+	margin-left: auto;
+	margin-right: auto;
+	display: block;
+}
+
 #output {
-	margin-top: 10px;
-	margin-left: 36px;
+	padding-top: 0px;
+	padding-left: 36px;
 	font-family: WonderMail;
 	font-size:200%;
-	z-index: 1; 
+	line-height: 26px;
 	white-space: nowrap;
-}
-
-#box{
-	margin-left: 10px;
-	margin-right: auto;
+	z-index: 1; 
 	position: absolute;
-}
-
-#input {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
+	top: 24px;
+	left: 0px;
+	margin-top: 0px;
+	margin-left: 0px;
+	display:inline-block;
 }

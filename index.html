@@ -16,14 +16,15 @@
 </head>
 <body>
 	<h1>ExplorerScript Boundary Test</h1>
-	<div class="section">
-		<textarea rows="4" cols="50" id="input" onkeyup="inputChange()"></textarea>
+	<div class="section-input">
+		<textarea rows="4" cols="56" id="input" onkeyup="inputChange()"></textarea>
 	</div>
-	<div class="section">
-		<canvas value="test text" width="480" height="106" id="box"></canvas>
+	<div class="section-result ">
+		<canvas width="480" height="88" id="box"></canvas>
 		<p id="output"></p>
 	</div>
 	<div class="section-text">
+		<p>Scale: <a onclick="scaleChange(1)">1x</a> <a onclick="scaleChange(2)">2x</a> <a onclick="scaleChange(3)">3x</a> <a onclick="scaleChange(4)">4x</a> </p>
 		<p>Welcome to the Explorerscript Boundary Test! The idea of the site is to test if lines of text written in ExplorerScript fits in a the game's text box.<br>
 			All characters should have the right size, but let me know if I messed up any symbol! The textbox is multi-line so you can check as many lines as you want.<br>
 			These special symbols are supported, with some modifications:
@@ -46,20 +47,20 @@
 
 		function drawBox(nlines){
 
-			canvas.height = 52*scale;
+			canvas.height = 44*scale;
 			output.height = 34*scale+20;
 			context.clearRect(0, 0, canvas.width, canvas.height);
 
 			if (nlines < 3) {
-				canvas.height = 52*scale;
+				canvas.height = 44*scale;
 				context.drawImage(boxtop,0,0,240*scale,9*scale);
-				context.drawImage(boxmid,0,9*scale,240*scale,34*scale);
-				context.drawImage(boxbot,0,43*scale,240*scale,9*scale);
+				context.drawImage(boxmid,0,9*scale,240*scale,26*scale);
+				context.drawImage(boxbot,0,35*scale,240*scale,9*scale);
 			} else {
-				canvas.height = (18+17*nlines)*scale;
+				canvas.height = (18+13*nlines)*scale;
 				context.drawImage(boxtop,0,0*scale,240*scale,9*scale);
-				context.drawImage(boxmid,0,9*scale,240*scale,34*nlines*scale);
-				context.drawImage(boxbot,0,(9+17*nlines)*scale,240*scale,9*scale);
+				context.drawImage(boxmid,0,9*scale,240*scale,26*nlines*scale);
+				context.drawImage(boxbot,0,(9+13*nlines)*scale,240*scale,9*scale);
 			}
 		}
 
@@ -81,13 +82,25 @@
 			drawBox(param);
 		}
 
+		function scaleChange(newScale){
+
+			scale = newScale;
+			output.style.top = 10 + 7 * scale + "px";
+			output.style.paddingLeft = 10 + 13 * newScale + "px";
+			output.style.fontSize = 100 * newScale + "%";
+			output.style.lineHeight = 13 * newScale + "px";
+			box.height = 52 * scale;
+			box.width = 240 * scale;
+			inputChange()
+		}
+
 		function load(){
 
 			boxtop.src = 'assets/boxtop.png';
 			boxmid.src = 'assets/boxmid.png';
 			boxbot.src = 'assets/boxbot.png';
 
-			if (!text) text = 'Hey, write something here!';
+			if (!text) text = '.Hey, write something here!.';
 			input.value = text.substr(1,text.length-2)
 			setTimeout(inputChange,300);
 		}
@@ -102,19 +115,50 @@
 		return result;
 		}
 
+		//WS stuff
+
 		let text = findGetParameter("text");
+		let scale = findGetParameter("scale");
+		let wsOn = findGetParameter("ws");
+		let wsServer = findGetParameter("wsServer");
 
 		let input = document.getElementById('input');
 		let output = document.getElementById('output');
 		let canvas = document.getElementById('box');
 		let context = canvas.getContext('2d');
 		context.imageSmoothingEnabled = false;
+		context.mozImageSmoothingEnabled = false;
+		context.webkitImageSmoothingEnabled = false;
 		let boxtop = new Image();
 		let boxmid = new Image();
 		let boxbot = new Image();
 
-		let scale = 2;
-		let paddx = 12 * scale, paddy = 9 * scale, sepy = 17 * scale;
+		if (!scale) scale = 2;
+		scaleChange(scale);
+
+		if (wsOn){
+
+			if(!wsServer) wsServer="ws://localhost:45546";
+			
+			console.log("WS Server: " + wsServer);
+
+			ws = new WebSocket(wsServer + ":" + wsPort);
+
+			ws.addEventListener("open", ()=> {
+				console.log("Conected!");
+			});
+
+			ws.addEventListener("message", data => {
+
+				console.log(data);
+				let event = JSON.parse(data.data).event;
+				if (event == "debugger_selected_string_changed"){
+					console.log(JSON.parse(data.data).args);
+					input.value = JSON.parse(data.data).args;
+					inputChange();
+				} 
+			});
+		}
 
 		load();
 	</script>
