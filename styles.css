@@ -71,27 +71,6 @@ h1 {
 	padding: 0px 10px;
 }
 
-.wsStatus {
-	background-color: #333333;
-	border-style: ridge;
-	border-width: 4px 6px;
-	border-color: #68D068;
-	border-radius: 5px;
-	width: max-content;
-	margin-left: 0px;
-	margin-right: 15%;
-	position: fixed;
-	top: 2px;
-	left: 2px;
-}
-
-#wsText {
-	margin-top: 0px;
-	margin-bottom: 0px;
-	margin-left: 4px;
-	display: inline;
-}
-
 #input {
 	margin-left: auto;
 	margin-right: auto;
