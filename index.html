@@ -23,6 +23,9 @@
 		<canvas width="480" height="88" id="box"></canvas>
 		<p id="output"></p>
 	</div>
+	<div class="wsStatus" hidden>
+		<img src="assets/skytemple.png"><p id="wsText">Connecting</p>
+	</div>
 	<div class="section-text">
 		<p hidden>Scale: <a onclick="scaleChange(1)">1x</a> <a onclick="scaleChange(2)">2x</a> <a onclick="scaleChange(3)">3x</a> <a onclick="scaleChange(4)">4x</a> </p>
 		<p>Speaker: <a onclick="speakerChange('hero')">Hero</a> <a onclick="speakerChange('partner')">Partner</a> <a onclick="speakerChange('icon')">Icon</a> <a onclick="speakerChange('')">None</a></p>
@@ -450,6 +453,7 @@
 
 		let speaker = "";
 
+		let wsText = document.getElementById('wsText');
 		let input = document.getElementById('input');
 		let output = document.getElementById('output');
 		let canvas = document.getElementById('box');
@@ -466,6 +470,9 @@
 
 		if (wsOn){
 
+			document.getElementsByClassName("wsStatus")[0].hidden = false;
+			
+
 			if(!wsServer) wsServer="ws://localhost:45546";
 			
 			console.log("WS Server: " + wsServer);
@@ -473,8 +480,24 @@
 			ws = new WebSocket(wsServer);
 
 			ws.addEventListener("open", ()=> {
+				wsText.innerText = "Connected!";
 				console.log("Conected!");
 			});
+
+			ws.onerror=function(evnt){
+				wsText.innerText = "Error! Try reloading the page";
+ 				console.log("Error during connection");
+			}
+
+			ws.onclose = function(evnt){
+				if(evnt == 3001){
+					wsText.innerText = "Closed";
+					console.log("Closed succsesfully");
+				} else {
+					wsText.innerText = "Error! Try reloading the site";
+					console.log("error: " + evnt.code);
+				}
+			}
 
 			ws.addEventListener("message", data => {
 
