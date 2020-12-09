@@ -101,6 +101,18 @@ h1 {
 	display:inline-block;
 }
 
+.tables{
+	text-align: center;
+}
+
+.tagtables{
+	display: inline-table;
+	border-style: ridge;
+	border-width: 4px 6px;
+	border-color: #68D068;
+	border-radius: 5px;
+}
+
 table{
 	align-self: auto;
 	margin-left: auto;
