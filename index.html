@@ -84,8 +84,8 @@
 					<tr><td>[M:S3]</td><td><img src="assets/icons.png" class="icon-star1"></td><td>Star</td></tr>
 					<tr><td>[M:S4]</td><td><img src="assets/icons.png" class="icon-check2"></td><td>X</td></tr>
 					<tr><td>[M:S5]</td><td><img src="assets/icons.png" class="icon-check3"></td><td>Check X</td></tr>
-					<tr><td>[M:B39]</td><td><img src="assets/icons.png" class="icon-bag"></td><td>Bag</td></tr>
-					<tr><td>[M:B40]</td><td><img src="assets/icons.png" class="icon-hut"></td><td>Hut</td></tr>
+					<tr><td>[M:S6]</td><td><img src="assets/icons.png" class="icon-bag"></td><td>Bag</td></tr>
+					<tr><td>[M:S7]</td><td><img src="assets/icons.png" class="icon-hut"></td><td>Hut</td></tr>
 					<tr><td>[M:H0]</td><td><img src="assets/icons.png" class="icon-heart1"></td><td>Heart pink vsmall</td></tr>
 					<tr><td>[M:H1]</td><td><img src="assets/icons.png" class="icon-heart2"></td><td>Heart pink small</td></tr>
 					<tr><td>[M:H2]</td><td><img src="assets/icons.png" class="icon-heart3"></td><td>Heart pink</td></tr>
@@ -106,13 +106,12 @@
 					<tr><td>[M:R8]</td><td><img src="assets/icons.png" class="icon-wifi"></td><td>Wi-Fi</td></tr>
 					<tr><td>[M:R9]</td><td><img src="assets/icons.png" class="icon-email"></td><td>E-Mail</td></tr>
 					<tr><td>[M:T0]</td><td>:</td><td>Colon</td></tr>
-					<tr><td>[M:T1]</td><td> </td><td>Space</td></tr>
-					<tr><td>[M:T2]</td><td><img src="assets/icons.png" class="icon-bubble"></td><td>Text Bubble</td></tr>
-					<tr><td>[M:B62]</td><td><img src="assets/icons.png" class="icon-space1"></td><td>Space Indicator</td></tr>
-					<tr><td>[M:B63]</td><td><img src="assets/icons.png" class="icon-space2"></td><td>Space Indicator Red</td></tr>
-					<tr><td>[M:T2]</td><td><img src="assets/icons.png" class="icon-kanji1"></td><td>Kanji 1 ?</td></tr>
-					<tr><td>[M:T3]</td><td><img src="assets/icons.png" class="icon-kanji2"></td><td>Kanji 2 ?</td></tr>
-					<tr><td>[M:T4]</td><td><img src="assets/icons.png" class="icon-kanji3"></td><td>Kanji 3 ?</td></tr>
+					<tr><td>[M:T1]</td><td><img src="assets/icons.png" class="icon-bubble"></td><td>Text Bubble</td></tr>
+					<tr><td>[M:T2]</td><td><img src="assets/icons.png" class="icon-space1"></td><td>Space Indicator</td></tr>
+					<tr><td>[M:T3]</td><td><img src="assets/icons.png" class="icon-space2"></td><td>Space Indicator Red</td></tr>
+					<tr><td>[M:T4]</td><td><img src="assets/icons.png" class="icon-kanji1"></td><td>Kanji 1 ?</td></tr>
+					<tr><td>[M:T5]</td><td><img src="assets/icons.png" class="icon-kanji2"></td><td>Kanji 2 ?</td></tr>
+					<tr><td>[M:T6]</td><td><img src="assets/icons.png" class="icon-kanji3"></td><td>Kanji 3 ?</td></tr>
 					<tr><td>[M:I0]</td><td><img src="assets/icons.png" class="icon-tm"></td><td>TM</td></tr>
 					<tr><td>[M:I1]</td><td><img src="assets/icons.png" class="icon-orb"></td><td>Orb</td></tr>
 				</tbody>
@@ -161,7 +160,7 @@
 					<tr><td>[CN]</td><td>Center following text TODO</td></tr>
 					<tr><td>[S:#]</td><td>Adds a space of # pixels TODO</td></tr>
 					<tr><td>[BAR]</td><td>Horizontal Line TODO</td></tr>
-					<tr><td colspan="2">Beyond Scope of this App:</td></tr>
+					<tr><td colspan="2">Beyond the scope of this tool:</td></tr>
 					<tr><td>[K]</td><td>Waits for Player input</td></tr>
 					<tr><td>[W:#]</td><td>Waits for # frames</td></tr>
 					<tr><td>[C]</td><td>Pause at end</td></tr>
@@ -286,6 +285,8 @@
 			.replaceAll('[M:S3]', '<img src="assets/icons.png" class="icon-star1">')
 			.replaceAll('[M:S4]', '<img src="assets/icons.png" class="icon-check2">')
 			.replaceAll('[M:S5]', '<img src="assets/icons.png" class="icon-check3">')
+			.replaceAll('[M:S6]', '<img src="assets/icons.png" class="icon-check2">')
+			.replaceAll('[M:S7]', '<img src="assets/icons.png" class="icon-check3">')
 			.replaceAll('[M:H0]', '<img src="assets/icons.png" class="icon-heart1">')
 			.replaceAll('[M:H1]', '<img src="assets/icons.png" class="icon-heart2">')
 			.replaceAll('[M:H2]', '<img src="assets/icons.png" class="icon-heart3">')
@@ -306,11 +307,12 @@
 			.replaceAll('[M:R8]', '<img src="assets/icons.png" class="icon-wifi">')
 			.replaceAll('[M:R9]', '<img src="assets/icons.png" class="icon-email">')
 			.replaceAll('[M:T0]', ':')
-			.replaceAll('[M:T1]', ' ')
-			.replaceAll('[M:T2]', '<img src="assets/icons.png" class="icon-bubble">')
-			.replaceAll('[M:T3]', '<img src="assets/icons.png" class="icon-kanji1">')
-			.replaceAll('[M:T4]', '<img src="assets/icons.png" class="icon-kanji2">')
-			.replaceAll('[M:T5]', '<img src="assets/icons.png" class="icon-kanji3">')
+			.replaceAll('[M:T1]', '<img src="assets/icons.png" class="icon-bubble">')
+			.replaceAll('[M:T2]', '<img src="assets/icons.png" class="icon-space1">')
+			.replaceAll('[M:T3]', '<img src="assets/icons.png" class="icon-space2">')
+			.replaceAll('[M:T4]', '<img src="assets/icons.png" class="icon-kanji1">')
+			.replaceAll('[M:T5]', '<img src="assets/icons.png" class="icon-kanji2">')
+			.replaceAll('[M:T6]', '<img src="assets/icons.png" class="icon-kanji3">')
 			.replaceAll('[M:I0]', '<img src="assets/icons.png" class="icon-tm">')
 			.replaceAll('[M:I1]', '<img src="assets/icons.png" class="icon-orb">')
 
