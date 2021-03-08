@@ -208,7 +208,7 @@
 			let tin = speaker + input.value;
 
 
-			tin = tin
+			tin = tin.replaceAll(' ', '&nbsp;')
 			.replaceAll('[M:B0]', '<img src="assets/icons.png" class="icon-controls1">')
 			.replaceAll('[M:B1]', '<img src="assets/icons.png" class="icon-controls2">')
 			.replaceAll('[M:B2]', '<img src="assets/icons.png" class="icon-controls3">')
@@ -243,7 +243,7 @@
 			.replaceAll('[M:B31]', '<img src="assets/icons.png" class="icon-gblock12">')
 			.replaceAll('[M:B31]', '<img src="assets/icons.png" class="icon-gblock13">')
 			.replaceAll('[M:B33]', '<img src="assets/icons.png" class="icon-pmoney">')
-			.replaceAll('[M:B34]', ' ')
+			.replaceAll('[M:B34]', '&nbsp;')
 			.replaceAll('[M:B35]', '<img src="assets/icons.png" class="icon-check1">')
 			.replaceAll('[M:B36]', '<img src="assets/icons.png" class="icon-star1">')
 			.replaceAll('[M:B37]', '<img src="assets/icons.png" class="icon-check2">')
@@ -280,7 +280,7 @@
 			.replaceAll('[M:B68]', '<img src="assets/icons.png" class="icon-orb">')
 
 			.replaceAll('[M:S0]', '<img src="assets/icons.png" class="icon-pmoney">')
-			.replaceAll('[M:S1]', ' ')
+			.replaceAll('[M:S1]', '&nbsp;')
 			.replaceAll('[M:S2]', '<img src="assets/icons.png" class="icon-check1">')
 			.replaceAll('[M:S3]', '<img src="assets/icons.png" class="icon-star1">')
 			.replaceAll('[M:S4]', '<img src="assets/icons.png" class="icon-check2">')
