@@ -27,8 +27,9 @@
 		<img src="assets/skytemple.png"><p id="wsText">Connecting</p>
 	</div>
 	<div class="section-text">
-		<p hidden>Scale: <a onclick="scaleChange(1)">1x</a> <a onclick="scaleChange(2)">2x</a> <a onclick="scaleChange(3)">3x</a> <a onclick="scaleChange(4)">4x</a> </p>
+		<p>Scale: <a onclick="scaleChange(1)">1x</a> <a onclick="scaleChange(2)">2x</a> <a onclick="scaleChange(3)">3x</a> <a onclick="scaleChange(4)">4x</a> </p>
 		<p>Speaker: <a onclick="speakerChange('hero')">Hero</a> <a onclick="speakerChange('partner')">Partner</a> <a onclick="speakerChange('icon')">Icon</a> <a onclick="speakerChange('')">None</a></p>
+		<p>Custom Speaker: <input id="input_name" onkeyup="speakerChange(1)"></input></p>
 		<p>Welcome to the Explorerscript Boundary Test! The idea of the site is to test if lines of text written in ExplorerScript fits in a the game's text box.<br>
 			All characters should have the right size, but let me know if I messed up any symbol! The textbox is multi-line so you can check as many lines as you want.<br>
 			These special symbols are supported, with some modifications:
@@ -124,7 +125,6 @@
 					<tr><td>Tag</td><td>Color</td></tr>
 					<tr><td>[CS:A]</td><td><span class="color1">Cream</td></tr>
 					<tr><td>[CS:B]</td><td><span class="color2">Red</td></tr>
-					<tr><td>[CS:D]</td><td><span class="color4">White</td></tr>
 					<tr><td>[CS:C]</td><td><span class="color3">Yellow</td></tr>
 					<tr><td>[CS:D]</td><td><span class="color4">White</td></tr>
 					<tr><td>[CS:G]</td><td><span class="color5">Cyan</td></tr>
@@ -412,7 +412,9 @@
 				speaker = "";
 			} else if (newSpeaker == "icon") {
 				speaker = '<img src="assets/icons.png" class="icon-bubble">:';
-			} else {
+			} else if (newSpeaker === 1) {
+				speaker = document.getElementById('input_name').value + ": ";
+		    } else {
 				speaker = "[" + newSpeaker + "]: ";
 			}
 
