@@ -37,6 +37,7 @@
 			<li>\n - New Line</li>
 			<li>\' - '</li>
 			<li>\" - "</li>
+			<li>~FF - Hex code </li>
 		</ul>
 		</p>
 		<div class="tables">
@@ -363,6 +364,13 @@
 						tin = replaceAt(tin,i,String.fromCharCode(tin.charCodeAt(i)+9333));
 					  }
 				}
+			}
+			if (tin.includes("~")) {
+				ustart = tin.indexOf("~")+1
+				ustop = ustart+2
+				uhex = parseInt(tin.substring(ustart,ustop), 16)
+				console.log(uhex)
+				tin = tin.substr(0,ustart-1) + String.fromCharCode(uhex) + tin.substr(ustop)
 			}
 
 			let tout = tin
