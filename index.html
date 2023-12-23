@@ -34,10 +34,10 @@
 			All characters should have the right size, but let me know if I messed up any symbol! The textbox is multi-line so you can check as many lines as you want.<br>
 			These special symbols are supported, with some modifications:
 		   <ul class="social-media">
-			<li>\n - New Line</li>
-			<li>\' - '</li>
-			<li>\" - "</li>
-			<li>~FF - Hex code </li>
+			<li>\n &nbsp;→&nbsp; New Line</li>
+			<li>\' &nbsp;→&nbsp; '</li>
+			<li>\" &nbsp;→&nbsp; "</li>
+			<li>~FF &nbsp;→&nbsp; Hex code</li>
 		</ul>
 		</p>
 		<div class="tables">
@@ -178,9 +178,9 @@
 
 
 	<script>
-
+		
 		function drawBox(nlines){
-
+			
 			canvas.height = 44*scale;
 			output.height = 34*scale+20;
 			context.clearRect(0, 0, canvas.width, canvas.height);
@@ -209,7 +209,7 @@
 			let tin = speaker + input.value;
 
 
-			tin = tin.replaceAll(' ', '&nbsp;')
+			tin = tin
 			.replaceAll('[M:B0]', '<img src="assets/icons.png" class="icon-controls1">')
 			.replaceAll('[M:B1]', '<img src="assets/icons.png" class="icon-controls2">')
 			.replaceAll('[M:B2]', '<img src="assets/icons.png" class="icon-controls3">')
@@ -244,7 +244,7 @@
 			.replaceAll('[M:B31]', '<img src="assets/icons.png" class="icon-gblock12">')
 			.replaceAll('[M:B31]', '<img src="assets/icons.png" class="icon-gblock13">')
 			.replaceAll('[M:B33]', '<img src="assets/icons.png" class="icon-pmoney">')
-			.replaceAll('[M:B34]', '&nbsp;')
+			.replaceAll('[M:B34]', ' ')
 			.replaceAll('[M:B35]', '<img src="assets/icons.png" class="icon-check1">')
 			.replaceAll('[M:B36]', '<img src="assets/icons.png" class="icon-star1">')
 			.replaceAll('[M:B37]', '<img src="assets/icons.png" class="icon-check2">')
@@ -281,7 +281,7 @@
 			.replaceAll('[M:B68]', '<img src="assets/icons.png" class="icon-orb">')
 
 			.replaceAll('[M:S0]', '<img src="assets/icons.png" class="icon-pmoney">')
-			.replaceAll('[M:S1]', '&nbsp;')
+			.replaceAll('[M:S1]', ' ')
 			.replaceAll('[M:S2]', '<img src="assets/icons.png" class="icon-check1">')
 			.replaceAll('[M:S3]', '<img src="assets/icons.png" class="icon-star1">')
 			.replaceAll('[M:S4]', '<img src="assets/icons.png" class="icon-check2">')
@@ -351,28 +351,56 @@
 			.replaceAll('[c_kind:PLAYER]', '<span class="hero">HITMONCHAN</span>')
 			.replaceAll('[c_kind:ATTENDANT1]', '<span class="hero">HITMONCHAN</span>');
 
-			if (tin.includes("[FT:1]")) {
-				let ustop, ustart = tin.indexOf("[FT:1]")+6;
-				if (tin.includes("[FT:0]")){
-					ustop = tin.indexOf("[FT:0]");
+			console.log("Inserting...")
+			recursion = true;
+			while (recursion) {
+				if (tin.includes("[FT:1]")) {
+				console.log("Instance!")
+					let ustop, ustart = tin.indexOf("[FT:1]")+6;
+					if (tin.includes("[FT:0]")){
+						ustop = tin.indexOf("[FT:0]");
+					} else {
+						ustop = tin.length;
+					}
+					
+					for (var i = ustart; i < ustop; i++) {
+						if (isUpperCase(tin.charAt(i))){
+							tin = replaceAt(tin,i,String.fromCharCode(tin.charCodeAt(i)+9333));
+							print
+						  }
+					}
+					tin = tin.replace("[FT:1]","")
+					tin = tin.replace("[FT:0]","")
 				} else {
-					ustop = tin.length;
-				}
-				
-				for (var i = ustart; i < ustop; i++) {
-  					if (isUpperCase(tin.charAt(i))){
-						tin = replaceAt(tin,i,String.fromCharCode(tin.charCodeAt(i)+9333));
-					  }
+					recursion = false;
 				}
 			}
-			if (tin.includes("~")) {
-				ustart = tin.indexOf("~")+1
-				ustop = ustart+2
-				uhex = parseInt(tin.substring(ustart,ustop), 16)
-				console.log(uhex)
-				tin = tin.substr(0,ustart-1) + String.fromCharCode(uhex) + tin.substr(ustop)
+			
+			ulastpos = 0;
+			recursion = true;
+			while (recursion) {
+				if (tin.substring(ulastpos).includes("~")) {
+					ustart = tin.substring(ulastpos).indexOf("~")+ulastpos;
+					ustop = ustart + 3;
+					usub = tin.substring(ustart+1,ustop);
+					uhex = parseInt(usub, 16);
+					
+					if (usub.search(/[0-9a-fA-F]{2}/)!=-1) {
+						unewchar = String.fromCharCode(uhex);
+					} else {
+						console.log("FAIL")
+						unewchar = String.fromCharCode(57400);
+					}
+					
+					console.log("Result: " + uhex)
+					tin = tin.substr(0,ustart) + unewchar + tin.substr(ustop)
+					ulastpos = ustart+1
+				} else {
+					recursion = false;
+				}
 			}
 
+			
 			let tout = tin
 			.replaceAll('\\n', '<br>').replaceAll('\n', '<br>').replaceAll("\\'", "'")
 			.replaceAll('\\"', '"').replaceAll('\\\\', '\\').replaceAll(/\[[^\]]*]/g,"")
@@ -419,7 +447,7 @@
 			if (!newSpeaker){
 				speaker = "";
 			} else if (newSpeaker == "icon") {
-				speaker = '<img src="assets/icons.png" class="icon-bubble">:';
+				speaker = '<img src="assets/icons.png" class="icon-bubble">: ';
 			} else if (newSpeaker === 1) {
 				speaker = document.getElementById('input_name').value + ": ";
 		    } else {
@@ -435,8 +463,8 @@
 			boxmid.src = 'assets/boxmid.png';
 			boxbot.src = 'assets/boxbot.png';
 
-			if (!text) text = '.Hey, write something here [M:B44]!\\nYou can change the speaker below!.';
-			input.value = text.substr(1,text.length-2)
+			if (!text) text = 'Hey, write something here [M:B44]!\\nYou can change the speaker below!';
+			input.value = text.substr(0,text.length)
 			setTimeout(inputChange,300);
 			setTimeout(inputChange,2000);
 		}
@@ -524,6 +552,8 @@
 		}
 
 		load();
+		
+		scaleChange(4); // TODO: REMOVE
 	</script>
 </body>
 </html>
