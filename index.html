@@ -376,6 +376,8 @@
 				}
 			}
 			
+			tin = tin.replaceAll(/\[[^\]]*]/g,"");
+			
 			ulastpos = 0;
 			recursion = true;
 			while (recursion) {
@@ -403,7 +405,7 @@
 			
 			let tout = tin
 			.replaceAll('\\n', '<br>').replaceAll('\n', '<br>').replaceAll("\\'", "'")
-			.replaceAll('\\"', '"').replaceAll('\\\\', '\\').replaceAll(/\[[^\]]*]/g,"")
+			.replaceAll('\\"', '"').replaceAll('\\\\', '\\')
 			;
 			
 			output.innerHTML = tout;
@@ -552,8 +554,6 @@
 		}
 
 		load();
-		
-		scaleChange(4); // TODO: REMOVE
 	</script>
 </body>
 </html>
