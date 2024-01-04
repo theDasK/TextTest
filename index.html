@@ -208,8 +208,7 @@
 
 			let tin = speaker + input.value;
 
-			/*
-			tin = tin
+			tin = tin.replaceAll(' ', '&nbsp')
 			.replaceAll('[M:B0]', '<img src="assets/icons.png" class="icon-controls1">')
 			.replaceAll('[M:B1]', '<img src="assets/icons.png" class="icon-controls2">')
 			.replaceAll('[M:B2]', '<img src="assets/icons.png" class="icon-controls3">')
@@ -350,7 +349,6 @@
 			.replaceAll('[team]', '<span class="team">wcwcwcwcw</span>')
 			.replaceAll('[c_kind:PLAYER]', '<span class="hero">HITMONCHAN</span>')
 			.replaceAll('[c_kind:ATTENDANT1]', '<span class="hero">HITMONCHAN</span>');
-			*/
 
 			recursion = true;
 			while (recursion) {
@@ -402,7 +400,7 @@
 			
 			let tout = tin
 			.replaceAll('\\n', '<br>').replaceAll('\n', '<br>').replaceAll("\\'", "'")
-			.replaceAll('\\"', '"').replaceAll('\\\\', '\\').replaceAll(' ', '&nbsp')
+			.replaceAll('\\"', '"').replaceAll('\\\\', '\\')
 			;
 			
 			output.innerHTML = tout;
@@ -446,11 +444,11 @@
 			if (!newSpeaker){
 				speaker = "";
 			} else if (newSpeaker == "icon") {
-				speaker = '<img src="assets/icons.png" class="icon-bubble">: ';
+				speaker = '<img src="assets/icons.png" class="icon-bubble">:';
 			} else if (newSpeaker === 1) {
-				speaker = document.getElementById('input_name').value + ": ";
+				speaker = document.getElementById('input_name').value + ":";
 		    } else {
-				speaker = "[" + newSpeaker + "]: ";
+				speaker = "[" + newSpeaker + "]:";
 			}
 
 			inputChange();
@@ -463,6 +461,7 @@
 			boxbot.src = 'assets/boxbot.png';
 
 			if (!text) text = 'Hey, write something here [M:B44]!\\nYou can change the speaker below!';
+			text = '[CS:G]La[M:S0]ras[CR][CS:A], do[CS:B][M:S1]you[CS:C] remember [CS:D]what[CS:H]\nyou[CS:J] told [CS:K][FT:1][hero] and [partner][FT:0][CS:L]? [CS:O]Y[CS:P]o[CS:Q]u[CS:R] s[CS:S]a[CS:T]i[CS:X]d[CS:Y]:\n[M:T1]\"[CS:Z]We\'ll[CR] settle[CR] this[CR] ~5BDeba[CR]te~5D lat[CR]e[CR]r[M:R7]\"' // TODO: erase this line on final build
 			input.value = text.substr(0,text.length)
 			setTimeout(inputChange,300);
 			setTimeout(inputChange,2000);
