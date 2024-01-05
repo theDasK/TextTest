@@ -29,10 +29,10 @@
 	<div class="section-text">
 		<p>Scale: <a onclick="scaleChange(1)">1x</a> <a onclick="scaleChange(2)">2x</a> <a onclick="scaleChange(3)">3x</a> <a onclick="scaleChange(4)">4x</a> </p>
 		<p>Speaker: <a onclick="speakerChange('hero')">Hero</a> <a onclick="speakerChange('partner')">Partner</a> <a onclick="speakerChange('icon')">Icon</a> <a onclick="speakerChange('')">None</a></p>
-		<p>Custom Speaker: <input id="input_name" onkeyup="speakerChange(1)"></input></p>
+		<p>Custom Speaker: <input id="input_name" onkeyup="speakerChange(1)" value="Kangaskhan"></input></p>
 		<p>Icon rendering: <a onclick="changeRenderType(false)">Text</a> <a onclick="changeRenderType(true)">Images</a>
-		<p>Welcome to the Explorerscript Text Test! The idea of the site is to test if lines of text written in ExplorerScript fits in a the game's text box.<br>
-			All characters should have the right size, but let me know if I messed up any symbol! The textbox is multi-line so you can check as many lines as you want.<br>
+		<p>Welcome to the Explorerscript Text Test! This site is to check lines of ExplorerScript text for correct spacing and formatting.<br>
+			<br>
 			These special symbols are supported, with some modifications:
 		   <ul>
 			<li>\n &nbsp;→&nbsp; New Line</li>
@@ -169,13 +169,13 @@
 				</tbody>
 			</table>
 		</div>
-		<p>Known inaccuracies:</p>
+		<p>Known quirks:</p>
 		<ul>
-			<li>Invalid text within brackes (e.g. <samp>[Hello, world!]</samp>) will generally crash. Use <samp>~5B</samp> and <samp>~5D</samp> to produce brackets safely, and <samp>~7E</samp> to produce a tilde. </li>
-			<li>Icons overflowing the end of a string will stack instead of breaking the line. Use (<samp>\n</samp>) to avoid undefined behavior.</li>
-			<li>Unown text <samp>[FT:1]</samp> changes the offset of all ASCII characters. Any character except for capital letters is defined, but largely unexpected for actual use.</li>
+			<li>Invalid text within brackes (e.g. <samp>[Hello, world!]</samp>) will generally crash ingame. Use <samp>~5B</samp> and <samp>~5D</samp> to produce brackets safely, and <samp>~7E</samp> to produce a tilde. </li>
+			<li>Icons overflowing the end of a string will stack instead of breaking the line ingame. Use (<samp>\n</samp>) to avoid undefined behavior.</li>
+			<li>Unown text <samp>[FT:1]</samp> remaps all ASCII characters ingame, not just capital letters. Non-capitalized characters probably shouldn't be used, and is beyond the scope of this tool.</li>
 		</ul>
-		<p>This tool was originally developed by DasK on <a href="https://discord.gg/4e3X36f">SkyTemple's Discord</a>. The latest updates were made by Emblem (emblem.blend)<br>
+		<p>This tool was originally developed by DasK on <a href="https://discord.gg/4e3X36f">SkyTemple's Discord</a>. The latest updates were made by Emblem (<samp>emblem.blend</samp>); hit him up first! <img src="assets/emblem.png", height=15px, class="pixelated"><br> 
 		</p>
 		<p>
 		Check the sourcecode <a href="https://github.com/theDasK/TextTest">here</a>. <a href="https://www.dafont.com/wonder-mail.font">Wonder Mail</a> font by <a href="https://www.reddit.com/user/ShinxHijinx">ShinxHijinx</a>
@@ -373,22 +373,16 @@
 		};
 			
 		function drawBox(nlines){
-			
+			if (nlines < 3) { nlines = 3; }
 			canvas.height = 44*scale;
 			output.height = 34*scale+20;
 			context.clearRect(0, 0, canvas.width, canvas.height);
 
-			if (nlines < 3) {
-				canvas.height = 44*scale;
-				context.drawImage(boxtop,0,0,240*scale,9*scale);
-				context.drawImage(boxmid,0,9*scale,240*scale,26*scale);
-				context.drawImage(boxbot,0,35*scale,240*scale,9*scale);
-			} else {
-				canvas.height = (18+13*nlines)*scale;
-				context.drawImage(boxtop,0,0*scale,240*scale,9*scale);
-				context.drawImage(boxmid,0,9*scale,240*scale,26*nlines*scale);
-				context.drawImage(boxbot,0,(9+13*nlines)*scale,240*scale,9*scale);
-			}
+			canvas.height = (18+13*nlines)*scale;
+			context.drawImage(boxtop,0,0*scale,240*scale,9*scale);
+			context.drawImage(boxmid,0,9*scale,240*scale,(13*nlines)*scale);
+			context.drawImage(boxbot,0,(9+13*nlines)*scale,240*scale,9*scale);
+			
 		}
 
 		const isUpperCase = (string) => /^[A-Z]*$/.test(string)
@@ -473,15 +467,12 @@
 			let unToggle = false;
 			
 			for (let i=0; i<charList.length; i++) {
-			console.log(unToggle);
 				tag = charList[i];
 				if (tag == String.fromCharCode(58163)) { // Begin Unowns character
-					console.log("Beginning at "+i)
 					charList.splice(i,1);
 					unToggle = true;
 					i--;
 				} else if (tag == String.fromCharCode(58162)) { // End Unowns character
-					console.log("Ending at "+i);
 					charList.splice(i,1);
 					unToggle = false;
 					i--;
@@ -552,7 +543,6 @@
 				speaker = '[M:T1]';
 			} else if (newSpeaker === 1) { // Custom speaker from textbox.
 				speaker = '[CS:G]' + document.getElementById('input_name').value + "[CR]:";
-				console.log("Newspeaker 1")
 		    } else { // Hero or Partner.
 				speaker = "[" + newSpeaker + "]:"; 
 			}
@@ -566,7 +556,7 @@
 			boxmid.src = 'assets/boxmid.png';
 			boxbot.src = 'assets/boxbot.png';
 
-			if (!text) text = 'Hey, write something here [M:B44]!\\nYou can change the speaker below!';
+			if (!text) text = 'Hey, write something here! [M:B44]\\nYou can change the speaker below!';
 			
 			input.value = text.substr(0,text.length)
 			setTimeout(inputChange,300);
