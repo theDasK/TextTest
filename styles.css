@@ -3,9 +3,16 @@
 	src: url("assets/wondermail.ttf");
 }
 
-body {
+html {
     background-color: #707070;
-	background: url("assets/back.png") no-repeat fixed center;
+	background: url("assets/back.png") no-repeat center center fixed;
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+}
+body {
+
     color: #FFFFFF;
     font-family: 'Verdana', Helvetica, Arial, sans-serif;
     font-weight: 300;
@@ -15,6 +22,16 @@ body {
 
 a {
 	color: #68D068;
+}
+
+.icons {
+	image-rendering: -webkit-optimize-contrast;
+	image-rendering: pixelated;
+}
+
+.pixelated {
+	image-rendering: -webkit-optimize-contrast;
+	image-rendering: pixelated;	
 }
 
 h1 {
@@ -120,6 +137,7 @@ h1 {
 	margin-top: 0px;
 	margin-left: 0px;
 	display:inline-block;
+	transform: translateZ(0);
 }
 
 .tables{
