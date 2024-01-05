@@ -137,6 +137,7 @@ h1 {
 	margin-top: 0px;
 	margin-left: 0px;
 	display:inline-block;
+	transform: translateZ(0);
 }
 
 .tables{
