@@ -17,6 +17,16 @@ a {
 	color: #68D068;
 }
 
+.icons {
+	image-rendering: -webkit-optimize-contrast;
+	image-rendering: pixelated;
+}
+
+.pixelated {
+	image-rendering: -webkit-optimize-contrast;
+	image-rendering: pixelated;	
+}
+
 h1 {
 	text-align: center;
 	font-size:40px;

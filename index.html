@@ -15,12 +15,12 @@
 	  
 </head>
 <body>
-	<h1>ExplorerScript Boundary Test</h1>
+	<h1>ExplorerScript Text Test</h1>
 	<div class="section-input">
 		<textarea rows="4" cols="56" id="input" onkeyup="inputChange()"></textarea>
 	</div>
 	<div class="section-result ">
-		<canvas width="480" height="88" id="box"></canvas>
+		<canvas width="480" height="88" id="box" class="pixelated"></canvas>
 		<p id="output"></p>
 	</div>
 	<div class="wsStatus" hidden>
@@ -30,10 +30,11 @@
 		<p>Scale: <a onclick="scaleChange(1)">1x</a> <a onclick="scaleChange(2)">2x</a> <a onclick="scaleChange(3)">3x</a> <a onclick="scaleChange(4)">4x</a> </p>
 		<p>Speaker: <a onclick="speakerChange('hero')">Hero</a> <a onclick="speakerChange('partner')">Partner</a> <a onclick="speakerChange('icon')">Icon</a> <a onclick="speakerChange('')">None</a></p>
 		<p>Custom Speaker: <input id="input_name" onkeyup="speakerChange(1)"></input></p>
-		<p>Welcome to the Explorerscript Boundary Test! The idea of the site is to test if lines of text written in ExplorerScript fits in a the game's text box.<br>
+		<p>Icon rendering: <a onclick="changeRenderType(false)">Text</a> <a onclick="changeRenderType(true)">Images</a>
+		<p>Welcome to the Explorerscript Text Test! The idea of the site is to test if lines of text written in ExplorerScript fits in a the game's text box.<br>
 			All characters should have the right size, but let me know if I messed up any symbol! The textbox is multi-line so you can check as many lines as you want.<br>
 			These special symbols are supported, with some modifications:
-		   <ul class="social-media">
+		   <ul>
 			<li>\n &nbsp;→&nbsp; New Line</li>
 			<li>\' &nbsp;→&nbsp; '</li>
 			<li>\" &nbsp;→&nbsp; "</li>
@@ -112,7 +113,7 @@
 					<tr><td>[M:T2]</td><td><img src="assets/icons.png" class="icon-space1"></td><td>Space Indicator</td></tr>
 					<tr><td>[M:T3]</td><td><img src="assets/icons.png" class="icon-space2"></td><td>Space Indicator Red</td></tr>
 					<tr><td>[M:T4]</td><td><img src="assets/icons.png" class="icon-kanji1"></td><td>Kanji 'Kari' (temp)</td></tr>
-					<tr><td>[M:T5]</td><td><img src="assets/icons.png" class="icon-kanji2"></td><td>Kanji 'Sue' (end)</td></tr>
+					<tr><td>[M:T5]</td><td><img src="assets/icons.png" class="icon-kanji2"></td><td>Kanji 'Su' (end)</td></tr>
 					<tr><td>[M:T6]</td><td><img src="assets/icons.png" class="icon-kanji3"></td><td>Katakana 'De'</td></tr>
 					<tr><td>[M:I0]</td><td><img src="assets/icons.png" class="icon-tm"></td><td>TM</td></tr>
 					<tr><td>[M:I1]</td><td><img src="assets/icons.png" class="icon-orb"></td><td>Orb</td></tr>
@@ -168,8 +169,13 @@
 				</tbody>
 			</table>
 		</div>
-		<p>Everything else in brackets gets ignored. If I missed some useful and common tag of symbol, or you want some other feature implemented,
-		or just want to correct me on my grammar (please do), let me know, I'm DasK on <a href="https://discord.gg/4e3X36f">SkyTemple's Discord</a>!<br>
+		<p>Known inaccuracies:</p>
+		<ul>
+			<li>Invalid text within brackes (e.g. <samp>[Hello, world!]</samp>) will generally crash. Use <samp>~5B</samp> and <samp>~5D</samp> to produce brackets safely, and <samp>~7E</samp> to produce a tilde. </li>
+			<li>Icons overflowing the end of a string will stack instead of breaking the line. Use (<samp>\n</samp>) to avoid undefined behavior.</li>
+			<li>Unown text <samp>[FT:1]</samp> changes the offset of all ASCII characters. Any character except for capital letters is defined, but largely unexpected for actual use.</li>
+		</ul>
+		<p>This tool was originally developed by DasK on <a href="https://discord.gg/4e3X36f">SkyTemple's Discord</a>. The latest updates were made by Emblem (emblem.blend)<br>
 		</p>
 		<p>
 		Check the sourcecode <a href="https://github.com/theDasK/TextTest">here</a>. <a href="https://www.dafont.com/wonder-mail.font">Wonder Mail</a> font by <a href="https://www.reddit.com/user/ShinxHijinx">ShinxHijinx</a>
@@ -178,7 +184,194 @@
 
 
 	<script>
+		const tags = {
+			// Tag - Character - Image tag
+			//     - 57344 = Hex E000
+			"[M:B0]": [57344 + 0, '<img src="assets/icons/Start.png", class="icons">'],
+			"[M:B1]": [57344 + 1, '<img src="assets/icons/Select.png", class="icons">'],
+			"[M:B2]": [57344 + 2, '<img src="assets/icons/A.png", class="icons">'],
+			"[M:B3]": [57344 + 3, '<img src="assets/icons/B.png", class="icons">'],
+			"[M:B4]": [57344 + 4, '<img src="assets/icons/X.png", class="icons">'],
+			"[M:B5]": [57344 + 5, '<img src="assets/icons/Y.png", class="icons">'],
+			"[M:B6]": [57344 + 6, '<img src="assets/icons/L.png", class="icons">'],
+			"[M:B7]": [57344 + 7, '<img src="assets/icons/R.png", class="icons">'],
+			"[M:B8]": [57344 + 8, '<img src="assets/icons/D-pad.png", class="icons">'],
+			"[M:B9]": [57344 + 9, '<img src="assets/icons/- Block.png", class="icons">'],
+			"[M:B10]": [57344 + 10, '<img src="assets/icons/Check Block.png", class="icons">'],
+			"[M:B11]": [57344 + 12, '<img src="assets/icons/X Block.png", class="icons">'],
+			"[M:B12]": [57344 + 13, '<img src="assets/icons/Up Block.png", class="icons">'],
+			"[M:B13]": [57344 + 14, '<img src="assets/icons/Down Block.png", class="icons">'],
+			"[M:B14]": [57344 + 15, '<img src="assets/icons/Left Block.png", class="icons">'],
+			"[M:B15]": [57344 + 16, '<img src="assets/icons/Right Block.png", class="icons">'],
+			"[M:B16]": [57344 + 17, '<img src="assets/icons/Rewind Block.png", class="icons">'],
+			"[M:B17]": [57344 + 18, '<img src="assets/icons/FF Block.png", class="icons">'],
+			"[M:B18]": [57344 + 19, '<img src="assets/icons/Sort Block.png", class="icons">'],
+			"[M:B19]": [57344 + 20, '<img src="assets/icons/Search Block.png", class="icons">'],
+			"[M:B20]": [57344 + 8, '<img src="assets/icons/D-Pad Vertical.png", class="icons">'],
+			"[M:B21]": [57344 + 8, '<img src="assets/icons/D-Pad Horizontal.png", class="icons">'],
+			"[M:B22]": [57344 + 9, '<img src="assets/icons/Gold - Block.png", class="icons">'],
+			"[M:B23]": [57344 + 10, '<img src="assets/icons/Gold Check Block.png", class="icons">'],
+			"[M:B24]": [57344 + 12, '<img src="assets/icons/Gold X Block.png", class="icons">'],
+			"[M:B25]": [57344 + 13, '<img src="assets/icons/Gold Up Block.png", class="icons">'],
+			"[M:B26]": [57344 + 14, '<img src="assets/icons/Gold Down Block.png", class="icons">'],
+			"[M:B27]": [57344 + 15, '<img src="assets/icons/Gold Left Block.png", class="icons">'],
+			"[M:B28]": [57344 + 16, '<img src="assets/icons/Gold Right Block.png", class="icons">'],
+			"[M:B29]": [57344 + 17, '<img src="assets/icons/Gold Rewind Block.png", class="icons">'],
+			"[M:B30]": [57344 + 18, '<img src="assets/icons/Gold FF Block.png", class="icons">'],
+			"[M:B31]": [57344 + 19, '<img src="assets/icons/Gold Sort Block.png", class="icons">'],
+			"[M:B32]": [57344 + 20, '<img src="assets/icons/Gold Search Block.png", class="icons">'],
+			
+			
+			"[M:B33]": [57344 + 21, '<img src="assets/icons/P-Money.png", class="icons">'],
+			"[M:B34]": [32, '<img src="assets/icons/Space.png", class="icons">'],
+			"[M:B35]": [57344 + 22, '<img src="assets/icons/Check.png", class="icons">'],
+			"[M:B36]": [57344 + 25, '<img src="assets/icons/Star.png", class="icons">'],
+			"[M:B37]": [57344 + 23, '<img src="assets/icons/X2.png", class="icons">'],
+			"[M:B38]": [57344 + 24, '<img src="assets/icons/Check X.png", class="icons">'],
+			"[M:B39]": [57344 + 27, '<img src="assets/icons/Bag.png", class="icons">'],
+			"[M:B40]": [57344 + 28, '<img src="assets/icons/Hut.png", class="icons">'],
+			"[M:B41]": [57344 + 29, '<img src="assets/icons/Tiny Pink Heart.png", class="icons">'],
+			"[M:B42]": [57344 + 30, '<img src="assets/icons/Small Pink Heart.png", class="icons">'],
+			"[M:B43]": [57344 + 31, '<img src="assets/icons/Pink Heart.png", class="icons">'],
+			"[M:B44]": [57344 + 32, '<img src="assets/icons/Large Pink Heart.png", class="icons">'],
+			"[M:B45]": [57344 + 29, '<img src="assets/icons/Tiny Gold Heart.png", class="icons">'],
+			"[M:B46]": [57344 + 30, '<img src="assets/icons/Small Gold Heart.png", class="icons">'],
+			"[M:B47]": [57344 + 31, '<img src="assets/icons/Gold Heart.png", class="icons">'],
+			"[M:B48]": [57344 + 32, '<img src="assets/icons/Large Gold Heart.png", class="icons">'],
+			"[M:B49]": [57344 + 31, '<img src="assets/icons/Unshaded Heart.png", class="icons">'],
+			"[M:B50]": [57344 + 33, '<img src="assets/icons/Dash.png", class="icons">'],
+			"[M:B51]": [57344 + 26, '<img src="assets/icons/Half Star.png", class="icons">'],
+			"[M:B52]": [57344 + 34, '<img src="assets/icons/Amber Gem.png", class="icons">'],
+			"[M:B53]": [57344 + 35, '<img src="assets/icons/Mail.png", class="icons">'],
+			"[M:B54]": [57344 + 36, '<img src="assets/icons/Open Mail.png", class="icons">'],
+			"[M:B55]": [57344 + 37, '<img src="assets/icons/Letter.png", class="icons">'],
+			"[M:B56]": [57344 + 38, '<img src="assets/icons/Newspaper.png", class="icons">'],
+			"[M:B57]": [57344 + 39, '<img src="assets/icons/Exclamation Box.png", class="icons">'],
+			"[M:B58]": [57344 + 40, '<img src="assets/icons/Wi-Fi.png", class="icons">'],
+			"[M:B59]": [57344 + 42, '<img src="assets/icons/E-Mail.png", class="icons">'],
+			"[M:B60]": [58, '<img src="assets/icons/Colon.png", class="icons">'],
+			"[M:B61]": [57344 + 41, '<img src="assets/icons/Text Bubble.png", class="icons">'],
+			"[M:B62]": [9251, '<img src="assets/icons/Space Indicator.png", class="icons">'],
+			"[M:B63]": [9251, '<img src="assets/icons/Space Indicator Red.png", class="icons">'],
+			"[M:B64]": [57344 + 50, '<img src="assets/icons/Kari.png", class="icons">'],
+			"[M:B65]": [57344 + 51, '<img src="assets/icons/Su.png", class="icons">'],
+			"[M:B66]": [57344 + 52, '<img src="assets/icons/De.png", class="icons">'],
+			"[M:B67]": [57344 + 43, '<img src="assets/icons/TM.png", class="icons">'],
+			"[M:B68]": [57344 + 44, '<img src="assets/icons/Orb.png", class="icons">'],
+			
+			
+			"[M:S0]": [57344 + 21, '<img src="assets/icons/P-Money.png", class="icons">'],
+			"[M:S1]": [32, '<img src="assets/icons/Space.png", class="icons">'],
+			"[M:S2]": [57344 + 22, '<img src="assets/icons/Check.png", class="icons">'],
+			"[M:S3]": [57344 + 25, '<img src="assets/icons/Star.png", class="icons">'],
+			"[M:S4]": [57344 + 23, '<img src="assets/icons/X2.png", class="icons">'],
+			"[M:S5]": [57344 + 24, '<img src="assets/icons/Check X.png", class="icons">'],
+			"[M:S6]": [57344 + 27, '<img src="assets/icons/Bag.png", class="icons">'],
+			"[M:S7]": [57344 + 28, '<img src="assets/icons/Hut.png", class="icons">'],
+			
+			"[M:H0]": [57344 + 29, '<img src="assets/icons/Tiny Pink Heart.png", class="icons">'],
+			"[M:H1]": [57344 + 30, '<img src="assets/icons/Small Pink Heart.png", class="icons">'],
+			"[M:H2]": [57344 + 31, '<img src="assets/icons/Pink Heart.png", class="icons">'],
+			"[M:H3]": [57344 + 32, '<img src="assets/icons/Large Pink Heart.png", class="icons">'],
+			"[M:H4]": [57344 + 29, '<img src="assets/icons/Tiny Gold Heart.png", class="icons">'],
+			"[M:H5]": [57344 + 30, '<img src="assets/icons/Small Gold Heart.png", class="icons">'],
+			"[M:H6]": [57344 + 31, '<img src="assets/icons/Gold Heart.png", class="icons">'],
+			"[M:H7]": [57344 + 32, '<img src="assets/icons/Large Gold Heart.png", class="icons">'],
+			"[M:H8]": [57344 + 31, '<img src="assets/icons/Unshaded Heart.png", class="icons">'],
+			"[M:R0]": [57344 + 33, '<img src="assets/icons/Dash.png", class="icons">'],
+			"[M:R1]": [57344 + 26, '<img src="assets/icons/Half Star.png", class="icons">'],
+			"[M:R2]": [57344 + 34, '<img src="assets/icons/Amber Gem.png", class="icons">'],
+			"[M:R3]": [57344 + 35, '<img src="assets/icons/Mail.png", class="icons">'],
+			"[M:R4]": [57344 + 36, '<img src="assets/icons/Open Mail.png", class="icons">'],
+			"[M:R5]": [57344 + 37, '<img src="assets/icons/Letter.png", class="icons">'],
+			"[M:R6]": [57344 + 38, '<img src="assets/icons/Newspaper.png", class="icons">'],
+			"[M:R7]": [57344 + 39, '<img src="assets/icons/Exclamation Box.png", class="icons">'],
+			"[M:R8]": [57344 + 40, '<img src="assets/icons/Wi-Fi.png", class="icons">'],
+			"[M:R9]": [57344 + 42, '<img src="assets/icons/E-Mail.png", class="icons">'],
+			
+			"[M:T0]": [58, '<img src="assets/icons/Colon.png", class="icons">'],
+			"[M:T1]": [57344 + 41, '<img src="assets/icons/Text Bubble.png", class="icons">'],
+			"[M:T2]": [9251, '<img src="assets/icons/Space Indicator.png", class="icons">'],
+			"[M:T3]": [9251, '<img src="assets/icons/Space Indicator Red.png", class="icons">'],
+			"[M:T4]": [57344 + 50, '<img src="assets/icons/Kari.png", class="icons">'],
+			"[M:T5]": [57344 + 51, '<img src="assets/icons/Su.png", class="icons">'],
+			"[M:T6]": [57344 + 52, '<img src="assets/icons/De.png", class="icons">'],
+			
+			"[M:I0]": [57344 + 43, '<img src="assets/icons/TM.png", class="icons">'],
+			"[M:I1]": [57344 + 44, '<img src="assets/icons/Orb.png", class="icons">'],
+					
+			"[CS:A]": [58112 + 1, String.fromCharCode(58113)], // Color codes evaluated last
+			"[CS:B]": [58112 + 2, String.fromCharCode(58114)],
+			"[CS:C]": [58112 + 3, String.fromCharCode(58115)],
+			"[CS:D]": [58112 + 4, String.fromCharCode(58116)],
+			"[CS:E]": [58112 + 5, String.fromCharCode(58117)],
+			"[CS:F]": [58112 + 6, String.fromCharCode(58118)],
+			"[CS:G]": [58112 + 7, String.fromCharCode(58119)],
+			"[CS:H]": [58112 + 8, String.fromCharCode(58120)],
+			"[CS:I]": [58112 + 9, String.fromCharCode(58121)],
+			"[CS:J]": [58112 + 10, String.fromCharCode(58122)],
+			"[CS:K]": [58112 + 11, String.fromCharCode(58123)],
+			"[CS:L]": [58112 + 12, String.fromCharCode(58124)],
+			"[CS:M]": [58112 + 13, String.fromCharCode(58125)],
+			"[CS:N]": [58112 + 14, String.fromCharCode(58126)],
+			"[CS:O]": [58112 + 15, String.fromCharCode(58127)],
+			"[CS:P]": [58112 + 16, String.fromCharCode(58128)],
+			"[CS:Q]": [58112 + 17, String.fromCharCode(58129)],
+			"[CS:R]": [58112 + 18, String.fromCharCode(58130)],
+			"[CS:S]": [58112 + 19, String.fromCharCode(58131)],
+			"[CS:T]": [58112 + 20, String.fromCharCode(58132)],
+			"[CS:U]": [58112 + 21, String.fromCharCode(58133)],
+			"[CS:V]": [58112 + 22, String.fromCharCode(58134)],
+			"[CS:W]": [58112 + 23, String.fromCharCode(58135)],
+			"[CS:X]": [58112 + 24, String.fromCharCode(58136)],
+			"[CS:Y]": [58112 + 25, String.fromCharCode(58137)],
+			"[CS:Z]": [58112 + 26, String.fromCharCode(58138)],
+			"[CR]"  : [58112 + 0 , String.fromCharCode(58112)],
+			
+			
+			"[FT:0]": [58112 + 50, String.fromCharCode(58162)],
+			"[FT:1]": [58112 + 51, String.fromCharCode(58163)]
+			
+		};
+		const characterTags = {
+			"[hero]":				String.fromCharCode(58129) + "HITMONCHAN" + String.fromCharCode(58139),
+			"[partner]":			String.fromCharCode(58115) + "MARSHADOW" + String.fromCharCode(58139),
+			"[team]":    			String.fromCharCode(58136) + "wcwcwcwcw" + String.fromCharCode(58139),
+			"[c_kind:PLAYER]": 		String.fromCharCode(58123) + "HITMONCHAN" + String.fromCharCode(58139),
+			"[c_kind:ATTENDANT1]":	String.fromCharCode(58123) + "HITMONCHAN" + String.fromCharCode(58139)
+		};
 		
+		const colorLookup = {
+			58113: '<span class="color1">',
+			58114: '<span class="color2">',
+			58115: '<span class="color3">',
+			58116: '<span class="color4">',
+			58117: '<span class="color5">',
+			58118: '<span class="color3">',
+			58119: '<span class="color5">',
+			58120: '<span class="color6">',
+			58121: '<span class="color7">',
+			58122: '<span class="color8">',
+			58123: '<span class="color9">',
+			58124: '<span class="color10">',
+			58125: '<span class="color9">',
+			58126: '<span class="color5">',
+			58127: '<span class="color11">',
+			58128: '<span class="color12">',
+			58129: '<span class="color13">',
+			58130: '<span class="color14">',
+			58131: '<span class="color15">',
+			58132: '<span class="color16">',
+			58133: '<span class="color3">',
+			58134: '<span class="color5">',
+			58135: '<span class="color2">',
+			58136: '<span class="color17">',
+			58137: '<span class="color18">',
+			58138: '<span class="color19">',
+			58112: '<span class="color4">',
+			58139: 'Reset' // Rolls back to previous color. Used for the Character tags.
+		};
+			
 		function drawBox(nlines){
 			
 			canvas.height = 44*scale;
@@ -203,214 +396,131 @@
 		function replaceAt(str, index, replacement) {
     		return str.substr(0, index) + replacement + str.substr(index + replacement.length);
 		}
-
-		function inputChange(){
-
+		
+		
+		
+		
+		function inputChange() {
+		
 			let tin = speaker + input.value;
-
-			tin = tin.replaceAll(' ', '&nbsp')
-			.replaceAll('[M:B0]', '<img src="assets/icons.png" class="icon-controls1">')
-			.replaceAll('[M:B1]', '<img src="assets/icons.png" class="icon-controls2">')
-			.replaceAll('[M:B2]', '<img src="assets/icons.png" class="icon-controls3">')
-			.replaceAll('[M:B3]', '<img src="assets/icons.png" class="icon-controls4">')
-			.replaceAll('[M:B4]', '<img src="assets/icons.png" class="icon-controls5">')
-			.replaceAll('[M:B5]', '<img src="assets/icons.png" class="icon-controls6">')
-			.replaceAll('[M:B6]', '<img src="assets/icons.png" class="icon-controls7">')
-			.replaceAll('[M:B7]', '<img src="assets/icons.png" class="icon-controls8">')
-			.replaceAll('[M:B8]', '<img src="assets/icons.png" class="icon-controls9">')
-			.replaceAll('[M:B9]', '<img src="assets/icons.png" class="icon-block1">')
-			.replaceAll('[M:B10]', '<img src="assets/icons.png" class="icon-block2">')
-			.replaceAll('[M:B11]', '<img src="assets/icons.png" class="icon-block3">')
-			.replaceAll('[M:B12]', '<img src="assets/icons.png" class="icon-block4">')
-			.replaceAll('[M:B13]', '<img src="assets/icons.png" class="icon-block5">')
-			.replaceAll('[M:B14]', '<img src="assets/icons.png" class="icon-block6">')
-			.replaceAll('[M:B15]', '<img src="assets/icons.png" class="icon-block7">')
-			.replaceAll('[M:B16]', '<img src="assets/icons.png" class="icon-block8">')
-			.replaceAll('[M:B17]', '<img src="assets/icons.png" class="icon-block9">')
-			.replaceAll('[M:B18]', '<img src="assets/icons.png" class="icon-block10">')
-			.replaceAll('[M:B19]', '<img src="assets/icons.png" class="icon-block11">')
-			.replaceAll('[M:B20]', '<img src="assets/icons.png" class="icon-block12">')
-			.replaceAll('[M:B21]', '<img src="assets/icons.png" class="icon-block13">')
-			.replaceAll('[M:B22]', '<img src="assets/icons.png" class="icon-gblock1">')
-			.replaceAll('[M:B23]', '<img src="assets/icons.png" class="icon-gblock2">')
-			.replaceAll('[M:B24]', '<img src="assets/icons.png" class="icon-gblock3">')
-			.replaceAll('[M:B25]', '<img src="assets/icons.png" class="icon-gblock4">')
-			.replaceAll('[M:B26]', '<img src="assets/icons.png" class="icon-gblock5">')
-			.replaceAll('[M:B27]', '<img src="assets/icons.png" class="icon-gblock6">')
-			.replaceAll('[M:B28]', '<img src="assets/icons.png" class="icon-gblock7">')
-			.replaceAll('[M:B29]', '<img src="assets/icons.png" class="icon-gblock8">')
-			.replaceAll('[M:B30]', '<img src="assets/icons.png" class="icon-gblock11">')
-			.replaceAll('[M:B31]', '<img src="assets/icons.png" class="icon-gblock12">')
-			.replaceAll('[M:B31]', '<img src="assets/icons.png" class="icon-gblock13">')
-			.replaceAll('[M:B33]', '<img src="assets/icons.png" class="icon-pmoney">')
-			.replaceAll('[M:B34]', ' ')
-			.replaceAll('[M:B35]', '<img src="assets/icons.png" class="icon-check1">')
-			.replaceAll('[M:B36]', '<img src="assets/icons.png" class="icon-star1">')
-			.replaceAll('[M:B37]', '<img src="assets/icons.png" class="icon-check2">')
-			.replaceAll('[M:B38]', '<img src="assets/icons.png" class="icon-check3">')
-			.replaceAll('[M:B39]', '<img src="assets/icons.png" class="icon-bag">')
-			.replaceAll('[M:B40]', '<img src="assets/icons.png" class="icon-hut">')
-			.replaceAll('[M:B41]', '<img src="assets/icons.png" class="icon-heart1">')
-			.replaceAll('[M:B42]', '<img src="assets/icons.png" class="icon-heart2">')
-			.replaceAll('[M:B43]', '<img src="assets/icons.png" class="icon-heart3">')
-			.replaceAll('[M:B44]', '<img src="assets/icons.png" class="icon-heart4">')
-			.replaceAll('[M:B45]', '<img src="assets/icons.png" class="icon-heart5">')
-			.replaceAll('[M:B46]', '<img src="assets/icons.png" class="icon-heart6">')
-			.replaceAll('[M:B47]', '<img src="assets/icons.png" class="icon-heart7">')
-			.replaceAll('[M:B48]', '<img src="assets/icons.png" class="icon-heart8">')
-			.replaceAll('[M:B49]', '<img src="assets/icons.png" class="icon-heart9">')
-			.replaceAll('[M:B50]', '<img src="assets/icons.png" class="icon-dash">')
-			.replaceAll('[M:B51]', '<img src="assets/icons.png" class="icon-star2">')
-			.replaceAll('[M:B52]', '<img src="assets/icons.png" class="icon-star3">')
-			.replaceAll('[M:B53]', '<img src="assets/icons.png" class="icon-mail1">')
-			.replaceAll('[M:B54]', '<img src="assets/icons.png" class="icon-mail2">')
-			.replaceAll('[M:B55]', '<img src="assets/icons.png" class="icon-mail3">')
-			.replaceAll('[M:B56]', '<img src="assets/icons.png" class="icon-mail4">')
-			.replaceAll('[M:B57]', '<img src="assets/icons.png" class="icon-exclamation">')
-			.replaceAll('[M:B58]', '<img src="assets/icons.png" class="icon-wifi">')
-			.replaceAll('[M:B59]', '<img src="assets/icons.png" class="icon-email">')
-			.replaceAll('[M:B60]', ':')
-			.replaceAll('[M:B61]', '<img src="assets/icons.png" class="icon-bubble">')
-			.replaceAll('[M:B62]', '<img src="assets/icons.png" class="icon-space1">')
-			.replaceAll('[M:B63]', '<img src="assets/icons.png" class="icon-space2">')
-			.replaceAll('[M:B64]', '<img src="assets/icons.png" class="icon-kanji1">')
-			.replaceAll('[M:B65]', '<img src="assets/icons.png" class="icon-kanji2">')
-			.replaceAll('[M:B66]', '<img src="assets/icons.png" class="icon-kanji3">')
-			.replaceAll('[M:B67]', '<img src="assets/icons.png" class="icon-tm">')
-			.replaceAll('[M:B68]', '<img src="assets/icons.png" class="icon-orb">')
-
-			.replaceAll('[M:S0]', '<img src="assets/icons.png" class="icon-pmoney">')
-			.replaceAll('[M:S1]', ' ')
-			.replaceAll('[M:S2]', '<img src="assets/icons.png" class="icon-check1">')
-			.replaceAll('[M:S3]', '<img src="assets/icons.png" class="icon-star1">')
-			.replaceAll('[M:S4]', '<img src="assets/icons.png" class="icon-check2">')
-			.replaceAll('[M:S5]', '<img src="assets/icons.png" class="icon-check3">')
-			.replaceAll('[M:S6]', '<img src="assets/icons.png" class="icon-check2">')
-			.replaceAll('[M:S7]', '<img src="assets/icons.png" class="icon-check3">')
-			.replaceAll('[M:H0]', '<img src="assets/icons.png" class="icon-heart1">')
-			.replaceAll('[M:H1]', '<img src="assets/icons.png" class="icon-heart2">')
-			.replaceAll('[M:H2]', '<img src="assets/icons.png" class="icon-heart3">')
-			.replaceAll('[M:H3]', '<img src="assets/icons.png" class="icon-heart4">')
-			.replaceAll('[M:H4]', '<img src="assets/icons.png" class="icon-heart5">')
-			.replaceAll('[M:H5]', '<img src="assets/icons.png" class="icon-heart6">')
-			.replaceAll('[M:H6]', '<img src="assets/icons.png" class="icon-heart7">')
-			.replaceAll('[M:H7]', '<img src="assets/icons.png" class="icon-heart8">')
-			.replaceAll('[M:H8]', '<img src="assets/icons.png" class="icon-heart9">')
-			.replaceAll('[M:R0]', '<img src="assets/icons.png" class="icon-dash">')
-			.replaceAll('[M:R1]', '<img src="assets/icons.png" class="icon-star2">')
-			.replaceAll('[M:R2]', '<img src="assets/icons.png" class="icon-star3">')
-			.replaceAll('[M:R3]', '<img src="assets/icons.png" class="icon-mail1">')
-			.replaceAll('[M:R4]', '<img src="assets/icons.png" class="icon-mail2">')
-			.replaceAll('[M:R5]', '<img src="assets/icons.png" class="icon-mail3">')
-			.replaceAll('[M:R6]', '<img src="assets/icons.png" class="icon-mail4">')
-			.replaceAll('[M:R7]', '<img src="assets/icons.png" class="icon-exclamation">')
-			.replaceAll('[M:R8]', '<img src="assets/icons.png" class="icon-wifi">')
-			.replaceAll('[M:R9]', '<img src="assets/icons.png" class="icon-email">')
-			.replaceAll('[M:T0]', ':')
-			.replaceAll('[M:T1]', '<img src="assets/icons.png" class="icon-bubble">')
-			.replaceAll('[M:T2]', '<img src="assets/icons.png" class="icon-space1">')
-			.replaceAll('[M:T3]', '<img src="assets/icons.png" class="icon-space2">')
-			.replaceAll('[M:T4]', '<img src="assets/icons.png" class="icon-kanji1">')
-			.replaceAll('[M:T5]', '<img src="assets/icons.png" class="icon-kanji2">')
-			.replaceAll('[M:T6]', '<img src="assets/icons.png" class="icon-kanji3">')
-			.replaceAll('[M:I0]', '<img src="assets/icons.png" class="icon-tm">')
-			.replaceAll('[M:I1]', '<img src="assets/icons.png" class="icon-orb">')
-
-			.replaceAll('[CS:A]', '<span class="color1">')
-			.replaceAll('[CS:B]', '<span class="color2">')
-			.replaceAll('[CS:C]', '<span class="color3">')
-			.replaceAll('[CS:D]', '<span class="color4">')
-			.replaceAll('[CS:E]', '<span class="color5">')
-			.replaceAll('[CS:F]', '<span class="color3">')
-			.replaceAll('[CS:G]', '<span class="color5">')
-			.replaceAll('[CS:H]', '<span class="color6">')
-			.replaceAll('[CS:I]', '<span class="color7">')
-			.replaceAll('[CS:J]', '<span class="color8">')
-			.replaceAll('[CS:K]', '<span class="color9">')
-			.replaceAll('[CS:L]', '<span class="color10">')
-			.replaceAll('[CS:M]', '<span class="color9">')
-			.replaceAll('[CS:N]', '<span class="color5">')
-			.replaceAll('[CS:O]', '<span class="color11">')
-			.replaceAll('[CS:P]', '<span class="color12">')
-			.replaceAll('[CS:Q]', '<span class="color13">')
-			.replaceAll('[CS:R]', '<span class="color14">')
-			.replaceAll('[CS:S]', '<span class="color15">')
-			.replaceAll('[CS:T]', '<span class="color16">')
-			.replaceAll('[CS:U]', '<span class="color3">')
-			.replaceAll('[CS:V]', '<span class="color5">')
-			.replaceAll('[CS:W]', '<span class="color2">')
-			.replaceAll('[CS:X]', '<span class="color17">')
-			.replaceAll('[CS:Y]', '<span class="color18">')
-			.replaceAll('[CS:Z]', '<span class="color19">')
-			.replaceAll('[CR]', '<span class="color4">')
-
-			.replaceAll('[hero]', '<span class="hero">HITMONCHAN</span>')
-			.replaceAll('[partner]', '<span class="partner">MARSHADOW</span>')
-			.replaceAll('[team]', '<span class="team">wcwcwcwcw</span>')
-			.replaceAll('[c_kind:PLAYER]', '<span class="hero">HITMONCHAN</span>')
-			.replaceAll('[c_kind:ATTENDANT1]', '<span class="hero">HITMONCHAN</span>');
-
-			recursion = true;
-			while (recursion) {
-				if (tin.includes("[FT:1]")) {
-					let ustop, ustart = tin.indexOf("[FT:1]")+6;
-					if (tin.includes("[FT:0]")){
-						ustop = tin.indexOf("[FT:0]");
-					} else {
-						ustop = tin.length;
+			charList = [];
+			for (i=0; i<tin.length; i++) {
+			
+				// Parse characters left to right.
+				c = tin.charAt(i)
+				
+				if (c=='[') { // Catches anything in brackets.
+				
+					searching = true;
+					rbracket = i;
+					while (searching) {
+						rbracket++;
+						if ((tin.charAt(rbracket) == ']') || (rbracket > tin.length)) {searching = false;}
 					}
+					tag = tin.substring(i, rbracket+1);
 					
-					for (var i = ustart; i < ustop; i++) {
-						if (isUpperCase(tin.charAt(i))){
-							tin = replaceAt(tin,i,String.fromCharCode(tin.charCodeAt(i)+9333));
-							print
-						  }
+					if (tag in tags) {
+						if (imgbased) {// True for inline HTML, false for characters for Canvas control (TODO)
+							charList.push(tags[tag][1]);
+						} else {
+							cn = tags[tag][0];
+							if (cn == 32) {
+								charList.push('&nbsp&nbsp'); // Space tag
+							} else {
+								charList.push(String.fromCharCode(cn));
+							}
+						} 
+					
+					} else if (tag in characterTags) {
+						charList = charList.concat(characterTags[tag].split(''))
 					}
-					tin = tin.replace("[FT:1]","")
-					tin = tin.replace("[FT:0]","")
+					i=rbracket;
+				
+				} else if (c=='\\') { // This is one backslash. TODO: go back and make sure we didn't miss functionality.
+					ex = tin.charAt(i+1)
+					
+					if (ex == 'n') {
+						charList.push('<br>');
+						i++;
+					} else if (ex == '"' || ex == "'") {
+						charList.push(ex);
+						i++;
+					} else {
+						charList.push(c);
+					}
+				} else if (c=='\n') {
+					charList.push('<br>');
+				} else if (c=='~') { // This eats any characters, but only produces valid output on two hex characters.
+					usub = tin.substring(i+1, i+3);
+					if (usub.search(/[0-9a-fA-F]{2}/)!=-1) { // Add more conditions for squares (hex 00-1f?)
+						charList.push(String.fromCharCode(parseInt(usub,16)));
+					} else {
+						charList.push(String.fromCharCode(57400));
+					}
+					i=i+2
+				} else if (c==' ') {
+					charList.push('&nbsp');
 				} else {
-					recursion = false;
+					charList.push(tin.charAt(i));
 				}
+				
 			}
 			
-			tin = tin.replaceAll(/\[[^\]]*]/g,"");
 			
-			ulastpos = 0;
-			recursion = true;
-			while (recursion) {
-				if (tin.substring(ulastpos).includes("~")) {
-					ustart = tin.substring(ulastpos).indexOf("~")+ulastpos;
-					ustop = ustart + 3;
-					usub = tin.substring(ustart+1,ustop);
-					uhex = parseInt(usub, 16);
-					
-					if (usub.search(/[0-9a-fA-F]{2}/)!=-1) {
-						unewchar = String.fromCharCode(uhex);
-					} else {
-						unewchar = String.fromCharCode(57400);
-					}
-					
-					tin = tin.substr(0,ustart) + unewchar + tin.substr(ustop)
-					ulastpos = ustart+1
+			
+			
+			// Post-processing - Unown text Unown-ifies Tilde text and names!
+			let unToggle = false;
+			
+			for (let i=0; i<charList.length; i++) {
+			console.log(unToggle);
+				tag = charList[i];
+				if (tag == String.fromCharCode(58163)) { // Begin Unowns character
+					console.log("Beginning at "+i)
+					charList.splice(i,1);
+					unToggle = true;
+					i--;
+				} else if (tag == String.fromCharCode(58162)) { // End Unowns character
+					console.log("Ending at "+i);
+					charList.splice(i,1);
+					unToggle = false;
+					i--;
 				} else {
-					recursion = false;
+					if (isUpperCase(tag) && unToggle) {
+						tag = String.fromCharCode(tag.charCodeAt(0)+9333);
+						charList[i] = tag;
+					}
 				}
 			}
-
+		
+		
+			let lastColor = [58116];
 			
-			let tout = tin
-			.replaceAll('\\n', '<br>').replaceAll('\n', '<br>').replaceAll("\\'", "'")
-			.replaceAll('\\"', '"').replaceAll('\\\\', '\\')
-			;
+			for (let i=0; i<charList.length; i++) {
+				tag = charList[i].charCodeAt(0);
+				if (tag in colorLookup) {
+					colortag = colorLookup[tag];
+					if (colortag == "Reset") {
+						lastColor.pop(tag);
+					} else {
+						lastColor.push(tag);
+					}
+					charList[i] = colorLookup[lastColor[lastColor.length-1]];
+				}
+				
+			}
 			
+			let tout = charList.join("");
 			output.innerHTML = tout;
 
 			let param = [];
 			param = tout.split("<br>");
 			param = param.length;
-
 			drawBox(param);
+			scaleIcons();
+		
 		}
+		
 
 		function scaleChange(newScale){
 
@@ -426,16 +536,11 @@
 		}
 
 		function scaleIcons(){
-
-			icons = output.getElementsByTagName("img");
-
-			for (img in icons) {
-
-				if ($img.style.scale != scale){
-
-					img.style.scale = scale;
-					img.style.margin-top;
-				}
+		
+			icons = output.getElementsByClassName("icons");
+			for (i = 0; i < icons.length; i++) {
+				img = icons.item(i);
+				img.width = img.width*scale;
 			}
 		}
 
@@ -444,11 +549,12 @@
 			if (!newSpeaker){
 				speaker = "";
 			} else if (newSpeaker == "icon") {
-				speaker = '<img src="assets/icons.png" class="icon-bubble">:';
-			} else if (newSpeaker === 1) {
-				speaker = document.getElementById('input_name').value + ":";
-		    } else {
-				speaker = "[" + newSpeaker + "]:";
+				speaker = '[M:T1]';
+			} else if (newSpeaker === 1) { // Custom speaker from textbox.
+				speaker = '[CS:G]' + document.getElementById('input_name').value + "[CR]:";
+				console.log("Newspeaker 1")
+		    } else { // Hero or Partner.
+				speaker = "[" + newSpeaker + "]:"; 
 			}
 
 			inputChange();
@@ -461,7 +567,7 @@
 			boxbot.src = 'assets/boxbot.png';
 
 			if (!text) text = 'Hey, write something here [M:B44]!\\nYou can change the speaker below!';
-			text = '[CS:G]La[M:S0]ras[CR][CS:A], do[CS:B][M:S1]you[CS:C] remember [CS:D]what[CS:H]\nyou[CS:J] told [CS:K][FT:1][hero] and [partner][FT:0][CS:L]? [CS:O]Y[CS:P]o[CS:Q]u[CS:R] s[CS:S]a[CS:T]i[CS:X]d[CS:Y]:\n[M:T1]\"[CS:Z]We\'ll[CR] settle[CR] this[CR] ~5BDeba[CR]te~5D lat[CR]e[CR]r[M:R7]\"' // TODO: erase this line on final build
+			
 			input.value = text.substr(0,text.length)
 			setTimeout(inputChange,300);
 			setTimeout(inputChange,2000);
@@ -481,6 +587,13 @@
 		});
 		return result;
 		}
+		
+		function changeRenderType(PAIN) {
+			imgbased = PAIN;
+			inputChange();
+		}
+		
+		let imgbased = true; // False uses text-based icons, true uses images
 
 		//WS stuff
 
@@ -505,7 +618,7 @@
 
 		if (!scale) scale = 1;
 		scaleChange(scale);
-
+		
 		if (wsOn){
 
 			//document.getElementsByClassName("wsStatus")[0].hidden = false;
